@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VizsgaremekBackend.Data;
@@ -11,9 +12,11 @@ using VizsgaremekBackend.Data;
 namespace VizsgaremekBackend.Migrations
 {
     [DbContext(typeof(VizsgaremekContext))]
-    partial class VizsgaremekContextModelSnapshot : ModelSnapshot
+    [Migration("20260922090131_AddParentIdToPeldany")]
+    partial class AddParentIdToPeldany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
