@@ -14,6 +14,9 @@ public class Peldany
     [Required]
     public Guid TypeId { get; set; }
     
+    
+    public Guid? ParentId { get; set; }
+    
     /// <summary>
     /// The peldany description, that users can append
     /// </summary>
