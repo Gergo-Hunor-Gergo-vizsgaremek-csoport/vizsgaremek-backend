@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VizsgaremekBackend.Models;
-using Type = System.Type;
+using Type = VizsgaremekBackend.Models.Type;
 
 namespace VizsgaremekBackend.Data;
 
