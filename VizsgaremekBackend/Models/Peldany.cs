@@ -52,6 +52,24 @@ public class Peldany
     [ForeignKey(nameof(LocationId))]
     public Location Location { get; set; }
     
+    public bool IsHibas { get; set; }
+    
+    /// <summary>
+    /// This példány has been marked as selejt, by an administrator
+    /// </summary>
+    public bool IsSelejt { get; set; }
+    
+    /// <summary>
+    /// This áéldány has been recommended for selejt
+    /// </summary>
+    public bool IsSelejtSugg { get; set; }
+    
+    /// <summary>
+    /// Date when this példány was marked (not recommended) as selejt
+    /// The példány will be deleted after a fixed time after this
+    /// </summary>
+    public DateTime SelejtedDate { get; set; }
+    
     
     [InverseProperty(nameof(Kolcsonzes.Peldany))]
     public ICollection<Kolcsonzes>  Kolcsonzeses { get; set; }
