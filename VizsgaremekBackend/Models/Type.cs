@@ -22,4 +22,7 @@ public class Type
     /// </summary>
     [Required]
     public string Icon { get; set; }
+    
+    
+    public ICollection<Peldany> Peldanys { get; set; }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VizsgaremekBackend.Models;
 
@@ -21,4 +22,8 @@ public class Log
     /// </summary>
     [Required]
     public Guid UserId { get; set; }
+    
+    
+    [ForeignKey(nameof(UserId))]
+    public User User { get; set; }
 }

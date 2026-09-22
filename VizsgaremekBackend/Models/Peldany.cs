@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VizsgaremekBackend.Models;
 
@@ -37,4 +38,24 @@ public class Peldany
     
     [Required]
     public Guid LocationId { get; set; }
+    
+    
+    [ForeignKey(nameof(TypeId))]
+    public Type Type { get; set; }
+    
+    [ForeignKey(nameof(FelelosId))]
+    public User FelelosUser { get; set; }
+    
+    [ForeignKey(nameof(ParentId))]
+    public Peldany Parent { get; set; }
+    
+    [ForeignKey(nameof(LocationId))]
+    public Location Location { get; set; }
+    
+    
+    [InverseProperty(nameof(Kolcsonzes.Peldany))]
+    public ICollection<Kolcsonzes>  Kolcsonzeses { get; set; }
+    
+    [InverseProperty(nameof(Parent))]
+    public ICollection<Peldany> Children { get; set; }
 }

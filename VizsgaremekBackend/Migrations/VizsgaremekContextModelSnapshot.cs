@@ -52,6 +52,9 @@ namespace VizsgaremekBackend.Migrations
                     b.HasKey("Id")
                         .HasName("pk_kolcsonzess");
 
+                    b.HasIndex("PeldanyId")
+                        .HasDatabaseName("ix_kolcsonzess_peldanyid");
+
                     b.ToTable("kolcsonzess", (string)null);
                 });
 
@@ -101,6 +104,9 @@ namespace VizsgaremekBackend.Migrations
                     b.HasKey("Id")
                         .HasName("pk_logs");
 
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_logs_userid");
+
                     b.ToTable("logs", (string)null);
                 });
 
@@ -141,6 +147,18 @@ namespace VizsgaremekBackend.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_peldanys");
+
+                    b.HasIndex("FelelosId")
+                        .HasDatabaseName("ix_peldanys_felelosid");
+
+                    b.HasIndex("LocationId")
+                        .HasDatabaseName("ix_peldanys_locationid");
+
+                    b.HasIndex("ParentId")
+                        .HasDatabaseName("ix_peldanys_parentid");
+
+                    b.HasIndex("TypeId")
+                        .HasDatabaseName("ix_peldanys_typeid");
 
                     b.ToTable("peldanys", (string)null);
                 });
@@ -206,6 +224,91 @@ namespace VizsgaremekBackend.Migrations
                         .HasName("pk_users");
 
                     b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("VizsgaremekBackend.Models.Kolcsonzes", b =>
+                {
+                    b.HasOne("VizsgaremekBackend.Models.Peldany", "Peldany")
+                        .WithMany("Kolcsonzeses")
+                        .HasForeignKey("PeldanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_kolcsonzess_peldanys_peldanyid");
+
+                    b.Navigation("Peldany");
+                });
+
+            modelBuilder.Entity("VizsgaremekBackend.Models.Log", b =>
+                {
+                    b.HasOne("VizsgaremekBackend.Models.User", "User")
+                        .WithMany("Logs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_logs_users_userid");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("VizsgaremekBackend.Models.Peldany", b =>
+                {
+                    b.HasOne("VizsgaremekBackend.Models.User", "FelelosUser")
+                        .WithMany("Peldanys")
+                        .HasForeignKey("FelelosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_peldanys_users_felelosid");
+
+                    b.HasOne("VizsgaremekBackend.Models.Location", "Location")
+                        .WithMany("Peldanys")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_peldanys_locations_locationid");
+
+                    b.HasOne("VizsgaremekBackend.Models.Peldany", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .HasConstraintName("fk_peldanys_peldanys_parentid");
+
+                    b.HasOne("VizsgaremekBackend.Models.Type", "Type")
+                        .WithMany("Peldanys")
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_peldanys_types_typeid");
+
+                    b.Navigation("FelelosUser");
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("VizsgaremekBackend.Models.Location", b =>
+                {
+                    b.Navigation("Peldanys");
+                });
+
+            modelBuilder.Entity("VizsgaremekBackend.Models.Peldany", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("Kolcsonzeses");
+                });
+
+            modelBuilder.Entity("VizsgaremekBackend.Models.Type", b =>
+                {
+                    b.Navigation("Peldanys");
+                });
+
+            modelBuilder.Entity("VizsgaremekBackend.Models.User", b =>
+                {
+                    b.Navigation("Logs");
+
+                    b.Navigation("Peldanys");
                 });
 #pragma warning restore 612, 618
         }
