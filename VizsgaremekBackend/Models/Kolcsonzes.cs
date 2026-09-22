@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VizsgaremekBackend.Models;
 
@@ -29,4 +30,7 @@ public class Kolcsonzes
     /// Time when the kolcsonzes ends
     /// </summary>
     public DateTime? ExpirationDate { get; set; }
+    
+    [ForeignKey(nameof(PeldanyId))]
+    public Peldany Peldany { get; set; }
 }

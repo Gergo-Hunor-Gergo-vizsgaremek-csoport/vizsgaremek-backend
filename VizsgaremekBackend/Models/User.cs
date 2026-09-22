@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VizsgaremekBackend.Models;
 
@@ -34,4 +35,10 @@ public class User
     /// </summary>
     [Required]
     public bool IsUserAdmin { get; set; }
+    
+    
+    public ICollection<Log> Logs { get; set; }
+    
+    [InverseProperty(nameof(Peldany.FelelosUser))]
+    public ICollection<Peldany> Peldanys { get; set; }
 }
