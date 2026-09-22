@@ -14,6 +14,12 @@ public class Kolcsonzes
     public Guid PeldanyId { get; set; }
     
     /// <summary>
+    /// Is the item still rented
+    /// </summary>
+    [Required]
+    public bool IsActive { get; set; }
+    
+    /// <summary>
     /// Time of kolcsonzes creation
     /// </summary>
     [Required]
