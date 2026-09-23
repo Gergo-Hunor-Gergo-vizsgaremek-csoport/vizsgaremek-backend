@@ -1,19 +1,19 @@
 using System.ComponentModel.DataAnnotations;
+using VizsgaremekBackend.Models;
 
-namespace VizsgaremekBackend.Models;
+namespace VizsgaremekBackend.Dtos;
 
 /// <summary>
 /// "típus"
 /// Stores a single type of items
 /// </summary>
-public class Type
+public class TypeWriteDto
 {
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
-    
+    [MaxLength(50)]
     [Required]
     public string Name { get; set; }
     
+    [MaxLength(500)]
     [Required]
     public string Description { get; set; }
     
@@ -23,6 +23,4 @@ public class Type
     [Required]
     public string Icon { get; set; }
     
-    
-    public ICollection<Peldany> Peldanys { get; set; }
 }
