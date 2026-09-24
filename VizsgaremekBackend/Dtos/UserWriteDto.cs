@@ -1,16 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using VizsgaremekBackend.Models;
 
-namespace VizsgaremekBackend.Models;
+namespace VizsgaremekBackend.Dtos;
 
-public class User
+public class UserWriteDto
 {
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
-    
+    [MaxLength(50)]
     [Required]
     public string Name { get; set; }
     
+    [MaxLength(50)]
     [Required]
     public string Email { get; set; }
     
@@ -36,10 +36,4 @@ public class User
     /// </summary>
     [Required]
     public bool IsUserAdmin { get; set; }
-    
-    
-    public ICollection<Log> Logs { get; set; }
-    
-    [InverseProperty(nameof(Peldany.FelelosUser))]
-    public ICollection<Peldany> Peldanys { get; set; }
 }

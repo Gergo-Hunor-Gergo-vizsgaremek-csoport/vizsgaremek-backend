@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using VizsgaremekBackend.Models;
 
-namespace VizsgaremekBackend.Models;
+namespace VizsgaremekBackend.Dtos;
 
-public class User
+public class UserReadDto
 {
     [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     
     [Required]
     public string Name { get; set; }
@@ -36,10 +37,4 @@ public class User
     /// </summary>
     [Required]
     public bool IsUserAdmin { get; set; }
-    
-    
-    public ICollection<Log> Logs { get; set; }
-    
-    [InverseProperty(nameof(Peldany.FelelosUser))]
-    public ICollection<Peldany> Peldanys { get; set; }
 }
