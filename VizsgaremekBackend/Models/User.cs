@@ -6,11 +6,12 @@ namespace VizsgaremekBackend.Models;
 public class User
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     
     [Required]
     public string Name { get; set; }
     
+    [Required]
     public string Email { get; set; }
     
     /// <summary>
