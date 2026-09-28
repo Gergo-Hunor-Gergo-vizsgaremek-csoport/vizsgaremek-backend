@@ -20,4 +20,12 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Infrastructure\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\VizsgaremekBackend\VizsgaremekBackend.csproj" />
+    </ItemGroup>
+
 </Project>
