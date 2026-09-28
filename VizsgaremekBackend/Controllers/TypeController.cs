@@ -9,7 +9,7 @@ namespace VizsgaremekBackend.Controllers;
 public class TypeController(TypeService typeService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<TypeReadDto>>> SearchAsync(string q, int? limit, int? offset)
+    public async Task<ActionResult<List<TypeReadDto>>> SearchAsync(string? q, int? limit, int? offset)
     {
         const int maxResults = 100;
         const int defaultLimit = 50;
