@@ -15,7 +15,7 @@ public class KolcsonzesService(VizsgaremekContext vizsgaremekContext, IMapper ma
         return mapper.Map<KolcsonzesReadDto>(result);
     }
     
-    public async Task PostAsync(KolcsonzesReadDto dto)
+    public async Task PostAsync(KolcsonzesWriteDto dto)
     {
         Kolcsonzes newKolcsonzes = mapper.Map<Kolcsonzes>(dto);
         
