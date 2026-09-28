@@ -10,7 +10,7 @@ public class LocationService(VizsgaremekContext vizsgaremekContext, IMapper mapp
 {
     public async Task<List<LocationReadDto>> SearchAsync(string query, int limit, int offset)
     {
-        return ( await vizsgaremekContext.Types
+        return ( await vizsgaremekContext.Locations
                 .Where(x => x.Name.Contains(query))
                 .Skip(offset)
                 .Take(limit)
