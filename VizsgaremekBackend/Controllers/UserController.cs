@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
+using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Services;
 
 namespace VizsgaremekBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(UserService userService) : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<UserReadDto>>> SearchAsync(string q, int? limit, int? offset)
