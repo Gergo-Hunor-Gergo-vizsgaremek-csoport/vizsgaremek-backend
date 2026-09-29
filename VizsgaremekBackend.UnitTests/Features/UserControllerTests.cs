@@ -41,7 +41,7 @@ public class UserControllerTests
         
         result.Result.Should().BeOfType<OkObjectResult>();
         
-        result.Value.Should().BeEquivalentTo(expectedResult);
+        ((OkObjectResult)result.Result).Value.Should().BeEquivalentTo(expectedResult);
 
         userServiceMock.Verify(x =>
             x.SearchAsync("test", It.IsAny<int>(), It.IsAny<int>()), Times.Once);
