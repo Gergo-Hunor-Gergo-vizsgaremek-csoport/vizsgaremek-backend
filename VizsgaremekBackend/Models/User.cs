@@ -42,4 +42,7 @@ public class User
     
     [InverseProperty(nameof(Peldany.FelelosUser))]
     public ICollection<Peldany> Peldanys { get; set; }
+    
+    [InverseProperty(nameof(Kolcsonzes.KolcsonzoUser))]
+    public ICollection<Kolcsonzes> Kolcsonzesek { get; set; }
 }
