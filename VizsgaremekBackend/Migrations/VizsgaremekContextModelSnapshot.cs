@@ -55,6 +55,9 @@ namespace VizsgaremekBackend.Migrations
                     b.HasIndex("PeldanyId")
                         .HasDatabaseName("ix_kolcsonzess_peldanyid");
 
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_kolcsonzess_userid");
+
                     b.ToTable("kolcsonzess", (string)null);
                 });
 
@@ -251,6 +254,15 @@ namespace VizsgaremekBackend.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_kolcsonzess_peldanys_peldanyid");
 
+                    b.HasOne("VizsgaremekBackend.Models.User", "KolcsonzoUser")
+                        .WithMany("Kolcsonzesek")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_kolcsonzess_users_userid");
+
+                    b.Navigation("KolcsonzoUser");
+
                     b.Navigation("Peldany");
                 });
 
@@ -322,6 +334,8 @@ namespace VizsgaremekBackend.Migrations
 
             modelBuilder.Entity("VizsgaremekBackend.Models.User", b =>
                 {
+                    b.Navigation("Kolcsonzesek");
+
                     b.Navigation("Logs");
 
                     b.Navigation("Peldanys");

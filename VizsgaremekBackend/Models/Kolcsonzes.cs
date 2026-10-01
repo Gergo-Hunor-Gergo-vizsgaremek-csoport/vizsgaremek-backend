@@ -33,4 +33,7 @@ public class Kolcsonzes
     
     [ForeignKey(nameof(PeldanyId))]
     public Peldany Peldany { get; set; }
+    
+    [ForeignKey(nameof(UserId))]
+    public User KolcsonzoUser { get; set; }
 }
