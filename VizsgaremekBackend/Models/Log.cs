@@ -6,7 +6,7 @@ namespace VizsgaremekBackend.Models;
 public class Log
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     
     [Required]
     public string Type { get; set; }

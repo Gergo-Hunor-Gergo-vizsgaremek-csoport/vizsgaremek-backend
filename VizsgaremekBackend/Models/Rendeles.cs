@@ -8,7 +8,7 @@ namespace VizsgaremekBackend.Models;
 public class Rendeles
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     
     [Required]
     public Guid UserId { get; set; }
