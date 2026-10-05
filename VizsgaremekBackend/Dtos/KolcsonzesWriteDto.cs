@@ -5,9 +5,11 @@ namespace VizsgaremekBackend.Dtos;
 
 public class KolcsonzesWriteDto
 {
-    [MaxLength(15)]
     [Required]
     public Guid PeldanyId { get; set; }
+    
+    [Required]
+    public Guid UserId { get; set; }
     
     [Required]
     public bool IsActive { get; set; }
