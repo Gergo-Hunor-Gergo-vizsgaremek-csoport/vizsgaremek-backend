@@ -45,4 +45,6 @@ public class User
     
     [InverseProperty(nameof(Kolcsonzes.KolcsonzoUser))]
     public ICollection<Kolcsonzes> Kolcsonzesek { get; set; }
+    
+    public ICollection<Rendeles> Rendeleses { get; set; }
 }

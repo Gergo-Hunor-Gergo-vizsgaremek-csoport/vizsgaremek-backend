@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VizsgaremekBackend.Data;
@@ -11,9 +12,11 @@ using VizsgaremekBackend.Data;
 namespace VizsgaremekBackend.Migrations
 {
     [DbContext(typeof(VizsgaremekContext))]
-    partial class VizsgaremekContextModelSnapshot : ModelSnapshot
+    [Migration("20261005061131_AddRendelesTable")]
+    partial class AddRendelesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,15 +201,15 @@ namespace VizsgaremekBackend.Migrations
                         .HasColumnName("userid");
 
                     b.HasKey("Id")
-                        .HasName("pk_rendeleses");
+                        .HasName("pk_rendeles");
 
                     b.HasIndex("TypeId")
-                        .HasDatabaseName("ix_rendeleses_typeid");
+                        .HasDatabaseName("ix_rendeles_typeid");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_rendeleses_userid");
+                        .HasDatabaseName("ix_rendeles_userid");
 
-                    b.ToTable("rendeleses", (string)null);
+                    b.ToTable("rendeles", (string)null);
                 });
 
             modelBuilder.Entity("VizsgaremekBackend.Models.Type", b =>
@@ -349,14 +352,14 @@ namespace VizsgaremekBackend.Migrations
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_rendeleses_types_typeid");
+                        .HasConstraintName("fk_rendeles_types_typeid");
 
                     b.HasOne("VizsgaremekBackend.Models.User", "User")
                         .WithMany("Rendeleses")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_rendeleses_users_userid");
+                        .HasConstraintName("fk_rendeles_users_userid");
 
                     b.Navigation("Type");
 
