@@ -16,6 +16,15 @@ public class Rendeles
     [Required]
     public Guid TypeId { get; set; }
     
+    [Required]
+    public DateTime Date { get; set; }
+    
+    [Required]
+    public int Quantity { get; set; }
+    
+    [Required]
+    public int CompletedQuantity { get; set; }
+    
     public User User { get; set; }
     public Type Type { get; set; }
 }
