@@ -2,12 +2,13 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
+using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
 using Type = System.Type;
 
 namespace VizsgaremekBackend.Services;
 
-public class UserService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
+public class UserService(VizsgaremekContext vizsgaremekContext, IMapper mapper) : IUserService
 {
     public async Task<List<UserReadDto>> SearchAsync(string query, int limit, int offset)
     {
