@@ -18,7 +18,7 @@ public class RendelesService(VizsgaremekContext vizsgaremekContext, IMapper mapp
     {
         Rendeles newRendeles = mapper.Map<Rendeles>(dto);
         await vizsgaremekContext.Rendeleses.AddAsync(newRendeles);
-        vizsgaremekContext.SaveChangesAsync();
+        await vizsgaremekContext.SaveChangesAsync();
         return mapper.Map<RendelesReadDto>(newRendeles);
     }
     
