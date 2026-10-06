@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VizsgaremekBackend.Data;
@@ -11,9 +12,11 @@ using VizsgaremekBackend.Data;
 namespace VizsgaremekBackend.Migrations
 {
     [DbContext(typeof(VizsgaremekContext))]
-    partial class VizsgaremekContextModelSnapshot : ModelSnapshot
+    [Migration("20261001074333_AddUserToKolcsonzes")]
+    partial class AddUserToKolcsonzes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,45 +185,6 @@ namespace VizsgaremekBackend.Migrations
                     b.ToTable("peldanys", (string)null);
                 });
 
-            modelBuilder.Entity("VizsgaremekBackend.Models.Rendeles", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<int>("CompletedQuantity")
-                        .HasColumnType("integer")
-                        .HasColumnName("completedquantity");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer")
-                        .HasColumnName("quantity");
-
-                    b.Property<Guid>("TypeId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("typeid");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("userid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_rendeleses");
-
-                    b.HasIndex("TypeId")
-                        .HasDatabaseName("ix_rendeleses_typeid");
-
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_rendeleses_userid");
-
-                    b.ToTable("rendeleses", (string)null);
-                });
-
             modelBuilder.Entity("VizsgaremekBackend.Models.Type", b =>
                 {
                     b.Property<Guid>("Id")
@@ -354,27 +318,6 @@ namespace VizsgaremekBackend.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("VizsgaremekBackend.Models.Rendeles", b =>
-                {
-                    b.HasOne("VizsgaremekBackend.Models.Type", "Type")
-                        .WithMany("Rendeleses")
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_rendeleses_types_typeid");
-
-                    b.HasOne("VizsgaremekBackend.Models.User", "User")
-                        .WithMany("Rendeleses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_rendeleses_users_userid");
-
-                    b.Navigation("Type");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("VizsgaremekBackend.Models.Location", b =>
                 {
                     b.Navigation("Peldanys");
@@ -390,8 +333,6 @@ namespace VizsgaremekBackend.Migrations
             modelBuilder.Entity("VizsgaremekBackend.Models.Type", b =>
                 {
                     b.Navigation("Peldanys");
-
-                    b.Navigation("Rendeleses");
                 });
 
             modelBuilder.Entity("VizsgaremekBackend.Models.User", b =>
@@ -401,8 +342,6 @@ namespace VizsgaremekBackend.Migrations
                     b.Navigation("Logs");
 
                     b.Navigation("Peldanys");
-
-                    b.Navigation("Rendeleses");
                 });
 #pragma warning restore 612, 618
         }

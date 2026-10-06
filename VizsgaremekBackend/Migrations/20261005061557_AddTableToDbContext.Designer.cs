@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VizsgaremekBackend.Data;
@@ -11,9 +12,11 @@ using VizsgaremekBackend.Data;
 namespace VizsgaremekBackend.Migrations
 {
     [DbContext(typeof(VizsgaremekContext))]
-    partial class VizsgaremekContextModelSnapshot : ModelSnapshot
+    [Migration("20261005061557_AddTableToDbContext")]
+    partial class AddTableToDbContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,18 +191,6 @@ namespace VizsgaremekBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<int>("CompletedQuantity")
-                        .HasColumnType("integer")
-                        .HasColumnName("completedquantity");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer")
-                        .HasColumnName("quantity");
 
                     b.Property<Guid>("TypeId")
                         .HasColumnType("uuid")

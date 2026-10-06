@@ -25,4 +25,6 @@ public class Type
     
     
     public ICollection<Peldany> Peldanys { get; set; }
+    
+    public ICollection<Rendeles> Rendeleses { get; set; }
 }

@@ -6,7 +6,7 @@ namespace VizsgaremekBackend.Models;
 public class Kolcsonzes
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     
     [Required]
     public Guid UserId { get; set; }
@@ -33,4 +33,7 @@ public class Kolcsonzes
     
     [ForeignKey(nameof(PeldanyId))]
     public Peldany Peldany { get; set; }
+    
+    [ForeignKey(nameof(UserId))]
+    public User KolcsonzoUser { get; set; }
 }

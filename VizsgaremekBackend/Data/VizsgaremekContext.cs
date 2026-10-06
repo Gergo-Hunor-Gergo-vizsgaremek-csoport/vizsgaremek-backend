@@ -12,4 +12,5 @@ public class VizsgaremekContext(DbContextOptions<VizsgaremekContext> options) : 
     public DbSet<Peldany> Peldanys { get; set; }
     public DbSet<Type> Types { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Rendeles>  Rendeleses { get; set; }
 }

@@ -10,7 +10,7 @@ namespace VizsgaremekBackend.Controllers;
 public class UserController(IUserService userService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<UserReadDto>>> SearchAsync(string q, int? limit, int? offset)
+    public async Task<ActionResult<List<UserReadDto>>> SearchAsync(string? q, int? limit, int? offset)
     {
         const int maxResults = 100;
         const int defaultLimit = 50;

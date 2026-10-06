@@ -9,7 +9,7 @@ namespace VizsgaremekBackend.Controllers;
 public class LocationController(LocationService locationService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<LocationReadDto>>> SearchAsync(string q, int? limit, int? offset)
+    public async Task<ActionResult<List<LocationReadDto>>> SearchAsync(string? q, int? limit, int? offset)
     {
         const int maxResults = 100;
         const int defaultLimit = 50;

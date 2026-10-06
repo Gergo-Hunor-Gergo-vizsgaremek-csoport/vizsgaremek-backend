@@ -10,7 +10,7 @@ namespace VizsgaremekBackend.Models;
 public class Peldany
 {
     [Key]
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     
     [Required]
     public Guid TypeId { get; set; }
