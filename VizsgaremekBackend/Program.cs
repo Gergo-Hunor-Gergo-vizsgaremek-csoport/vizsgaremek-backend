@@ -21,7 +21,7 @@ public class Program
                 .UseLowerCaseNamingConvention();
         });
         
-        builder.Services.AddAutoMapper(typeof(Program));
+        builder.Services.AddAutoMapper(_ => {}, typeof(Program).Assembly);
 
         // Add services to the container.
 
