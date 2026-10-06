@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Testcontainers.PostgreSql;
 using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Services;
@@ -27,7 +28,7 @@ public class DatabaseFixture : IAsyncLifetime
         new MapperConfiguration(cfg =>
         {
             cfg.AddMaps(typeof(ServiceNamespaceMarker).Assembly.FullName);
-        }).CreateMapper();
+        }, new NullLoggerFactory()).CreateMapper();
     
     public async Task InitializeAsync()
     {
