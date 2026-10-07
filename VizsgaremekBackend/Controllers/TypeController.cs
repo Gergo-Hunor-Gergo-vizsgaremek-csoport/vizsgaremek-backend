@@ -51,5 +51,18 @@ public class TypeController(TypeService typeService) : ControllerBase
         await typeService.DeleteAsync(id);
         return NoContent();
     }
-    
+
+    [HttpGet("{id:guid}/peldanyok")]
+    public async Task<ActionResult<TypeReadDto[]>> GetPeldanysAsync(Guid id, int? limit, int? offset)
+    {
+        const int maxResults = 100;
+        const int defaultLimit = 50;
+        if (limit > maxResults) return BadRequest($"Limit may not be more than {maxResults}");
+        
+
+        offset ??= 0;
+        limit ??= defaultLimit;
+        return Ok(await typeService.GetPeldanys(id,defaultLimit,0));
+    }
+
 }
