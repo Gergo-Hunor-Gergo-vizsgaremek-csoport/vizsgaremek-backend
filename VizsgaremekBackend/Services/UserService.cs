@@ -4,7 +4,6 @@ using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
-using Type = System.Type;
 
 namespace VizsgaremekBackend.Services;
 
@@ -45,8 +44,6 @@ public class UserService(VizsgaremekContext vizsgaremekContext, IMapper mapper) 
         
         await vizsgaremekContext.SaveChangesAsync();
         
-        
-        
     }
     
     public async Task DeleteAsync(Guid id)
@@ -56,5 +53,34 @@ public class UserService(VizsgaremekContext vizsgaremekContext, IMapper mapper) 
         vizsgaremekContext.Users.Remove(user);
         
         await vizsgaremekContext.SaveChangesAsync();
+    }
+    
+    public async Task<KolcsonzesReadDto[]> GetKolcsonzesekAsync(Guid id)
+    {
+        return (vizsgaremekContext.Users
+            .Include(x => x.Kolcsonzesek)
+            .Single(x => x.Id == id)
+            .Kolcsonzesek
+            .Select(mapper.Map<KolcsonzesReadDto>).ToArray());
+    }
+    
+    public async Task<RendelesReadDto[]> GetRendelesekAsync(Guid id)
+    {
+        return (vizsgaremekContext.Users
+                .Include(user => user.Rendeleses)
+                .Single(x => x.Id == id)
+                .Rendeleses
+                .Select(x => mapper.Map<RendelesReadDto>(x))
+            ).ToArray();
+    }
+
+    public async Task<PeldanyReadDto[]> GetFelelossegekAsync(Guid id)
+    {
+        return (vizsgaremekContext.Users
+                .Include(x => x.Peldanys)
+                .Single(x => x.Id == id)
+                .Peldanys
+                .Select(x => mapper.Map<PeldanyReadDto>(x))
+            ).ToArray();
     }
 }

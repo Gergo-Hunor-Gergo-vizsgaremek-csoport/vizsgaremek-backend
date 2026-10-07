@@ -53,4 +53,24 @@ public class UserController(IUserService userService) : ControllerBase
         return NoContent();
     }
     
+    
+    [HttpGet("{id:guid}/kolcsonzesek")]
+    public async Task<ActionResult<KolcsonzesReadDto[]>> GetKolcsonzesekAsync(Guid id)
+    {
+        return Ok(await userService.GetKolcsonzesekAsync(id));
+    }
+    
+    [HttpGet("{id:guid}/rendelesek")]
+    public async Task<ActionResult<RendelesReadDto[]>> GetRendelesekAsync(Guid id)
+    {
+        return Ok(await userService.GetRendelesekAsync(id));
+    } 
+    
+    [HttpGet("{id:guid}/felelossegek")]
+    public async Task<ActionResult<PeldanyReadDto[]>> GetFelelossegekAsync(Guid id)
+    {
+        return Ok(await userService.GetFelelossegekAsync(id));
+
+    }
+    
 }

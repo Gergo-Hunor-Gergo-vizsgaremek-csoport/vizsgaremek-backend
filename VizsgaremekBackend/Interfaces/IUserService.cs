@@ -13,4 +13,10 @@ public interface IUserService
     public Task PutAsync(Guid id, UserWriteDto dto);
 
     public Task DeleteAsync(Guid id);
+    
+    public Task<KolcsonzesReadDto[]> GetKolcsonzesekAsync(Guid id);
+    
+    public Task<RendelesReadDto[]> GetRendelesekAsync(Guid id);
+    
+    public Task<PeldanyReadDto[]> GetFelelossegekAsync(Guid id);
 }
