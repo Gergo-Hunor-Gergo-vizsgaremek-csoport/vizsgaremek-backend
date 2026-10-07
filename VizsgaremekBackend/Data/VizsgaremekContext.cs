@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VizsgaremekBackend.Models;
 using Type = VizsgaremekBackend.Models.Type;
 
 namespace VizsgaremekBackend.Data;
 
-public class VizsgaremekContext(DbContextOptions<VizsgaremekContext> options) : DbContext(options)
+public class VizsgaremekContext(DbContextOptions<VizsgaremekContext> options) 
+    : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<Kolcsonzes> Kolcsonzess { get; set; }
     public DbSet<Location> Locations { get; set; }

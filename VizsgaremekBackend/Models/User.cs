@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace VizsgaremekBackend.Models;
 
-public class User
+public class User : IdentityUser<Guid>
 {
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    //Do not add "[Key]"! It is defined by IdentityUser.
+    public override Guid Id { get; set; } = Guid.NewGuid();
     
     [Required]
     public string Name { get; set; }
