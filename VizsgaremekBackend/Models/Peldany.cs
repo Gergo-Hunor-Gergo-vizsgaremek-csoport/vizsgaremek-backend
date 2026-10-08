@@ -23,6 +23,8 @@ public class Peldany
     /// </summary>
     public string? Description { get; set; }
     
+    public string SerialNumber { get; set; }
+    
     /// <summary>
     /// Date of the Peldany being added to the system
     /// </summary>
