@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VizsgaremekBackend.Data;
+using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
 namespace VizsgaremekBackend;
@@ -20,6 +22,27 @@ public class Program
                 .LogTo(Console.WriteLine, LogLevel.Information)
                 .UseLowerCaseNamingConvention();
         });
+        
+        // Auth
+        builder.Services.AddIdentityApiEndpoints<User>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+
+                // User settings
+                options.User.RequireUniqueEmail = true; 
+            })
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<VizsgaremekContext>();
+        
         
         builder.Services.AddAutoMapper(_ => {}, typeof(Program).Assembly);
 
@@ -84,7 +107,11 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
+
+        app.MapGroup("/auth")
+            .MapIdentityApi<User>();
 
 
         app.MapControllers();
