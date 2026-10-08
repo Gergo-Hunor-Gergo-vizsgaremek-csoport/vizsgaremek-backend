@@ -70,6 +70,10 @@ public class Peldany
     /// </summary>
     public DateTime SelejtedDate { get; set; }
     
+    public Guid? ActiveKolcsonzesId { get; set; }
+    
+    [ForeignKey(nameof(ActiveKolcsonzesId))]
+    public Kolcsonzes? ActiveKolcsonzes { get; set; }
     
     [InverseProperty(nameof(Kolcsonzes.Peldany))]
     public ICollection<Kolcsonzes>  Kolcsonzeses { get; set; }

@@ -12,7 +12,7 @@ public class UserService(VizsgaremekContext vizsgaremekContext, IMapper mapper) 
     public async Task<List<UserReadDto>> SearchAsync(string query, int limit, int offset)
     {
         return ( await vizsgaremekContext.Users
-                .Where(x => x.Name.Contains(query))
+                .Where(x => x.UserName.Contains(query))
                 .Skip(offset)
                 .Take(limit)
                 .ToArrayAsync())
