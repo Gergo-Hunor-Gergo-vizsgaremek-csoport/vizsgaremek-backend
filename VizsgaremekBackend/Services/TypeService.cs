@@ -55,4 +55,15 @@ public class TypeService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
         
         await vizsgaremekContext.SaveChangesAsync();
     }
+    
+    public async Task<PeldanyReadDto[]> GetPeldanys(Guid id,int limit, int offset)
+    {
+        return vizsgaremekContext.Types
+            .Include(x => x.Peldanys)
+            .Single(x => x.Id == id)
+            .Peldanys
+            .Skip(offset).Take(limit)
+            .Select(x => mapper.Map<PeldanyReadDto>(x))
+            .ToArray();
+    }
 }
