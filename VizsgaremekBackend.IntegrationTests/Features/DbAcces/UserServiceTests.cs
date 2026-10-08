@@ -19,10 +19,7 @@ public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         {
             Id = Guid.NewGuid(),
             Email = "user@example.com",
-            Name = "test",
-            IsDeviceAdmin = false,
-            IsSysAdmin = false,
-            IsUserAdmin = false,
+            UserName = "test",
         };
         
         await dbContext.Users.AddAsync(user);
@@ -31,7 +28,7 @@ public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         UserService userService = new(dbContext, fixture.Mapper);
         
         //Act
-        var res = await userService.SearchAsync(user.Name, 5, 0);
+        var res = await userService.SearchAsync(user.UserName, 5, 0);
 
         //Assert
         res.Should().NotBeNull();
