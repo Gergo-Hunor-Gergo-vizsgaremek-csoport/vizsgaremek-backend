@@ -8,7 +8,20 @@ namespace VizsgaremekBackend;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task SeedRolesAsync(RoleManager<IdentityRole<Guid>> roleManager)
+    {
+        string[] roleNames = ["SysAdmin", "UserAdmin", "DeviceAdmin"];
+
+        foreach (var roleName in roleNames)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+            }
+        }
+    }
+    
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +90,15 @@ public class Program
         });
 
         var app = builder.Build();
+
+        // Seed identity roles on startup
+        using (IServiceScope scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider
+                .GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+            await SeedRolesAsync(roleManager);
+        }
         
         app.UseCors("AllowFrontend");
         
