@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VizsgaremekBackend.Data;
@@ -11,9 +12,11 @@ using VizsgaremekBackend.Data;
 namespace VizsgaremekBackend.Migrations
 {
     [DbContext(typeof(VizsgaremekContext))]
-    partial class VizsgaremekContextModelSnapshot : ModelSnapshot
+    [Migration("20261008080245_CleanUpDb")]
+    partial class CleanUpDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,11 +324,6 @@ namespace VizsgaremekBackend.Migrations
                     b.Property<DateTime>("SelejtedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("selejteddate");
-
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("serialnumber");
 
                     b.Property<Guid>("TypeId")
                         .HasColumnType("uuid")

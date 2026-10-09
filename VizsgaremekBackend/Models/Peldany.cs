@@ -23,6 +23,8 @@ public class Peldany
     /// </summary>
     public string? Description { get; set; }
     
+    public string SerialNumber { get; set; }
+    
     /// <summary>
     /// Date of the Peldany being added to the system
     /// </summary>
@@ -70,6 +72,10 @@ public class Peldany
     /// </summary>
     public DateTime SelejtedDate { get; set; }
     
+    public Guid? ActiveKolcsonzesId { get; set; }
+    
+    [ForeignKey(nameof(ActiveKolcsonzesId))]
+    public Kolcsonzes? ActiveKolcsonzes { get; set; }
     
     [InverseProperty(nameof(Kolcsonzes.Peldany))]
     public ICollection<Kolcsonzes>  Kolcsonzeses { get; set; }
