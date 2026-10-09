@@ -49,7 +49,7 @@ public class Peldany
     public User FelelosUser { get; set; }
     
     [ForeignKey(nameof(ParentId))]
-    public Peldany Parent { get; set; }
+    public Peldany? Parent { get; set; }
     
     [ForeignKey(nameof(LocationId))]
     public Location Location { get; set; }
@@ -70,7 +70,7 @@ public class Peldany
     /// Date when this példány was marked (not recommended) as selejt
     /// The példány will be deleted after a fixed time after this
     /// </summary>
-    public DateTime SelejtedDate { get; set; }
+    public DateTime? SelejtedDate { get; set; }
     
     public Guid? ActiveKolcsonzesId { get; set; }
     
