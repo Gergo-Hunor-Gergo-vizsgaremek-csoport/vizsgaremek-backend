@@ -12,7 +12,14 @@ public class UserWriteDto
     
     [MaxLength(50)]
     [Required]
+    [EmailAddress]
     public string Email { get; set; }
+    
+    /// <summary>
+    /// Required when creating a new user. Ignored when updating.
+    /// </summary>
+    [MinLength(8)]
+    public string? Password { get; set; }
     
     /// <summary>
     /// Gives the user unlimited permissions (some actions are only possible with this)

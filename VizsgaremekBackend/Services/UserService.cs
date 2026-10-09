@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
@@ -7,7 +8,11 @@ using VizsgaremekBackend.Models;
 
 namespace VizsgaremekBackend.Services;
 
-public class UserService(VizsgaremekContext vizsgaremekContext, IMapper mapper) : IUserService
+public class UserService(
+    VizsgaremekContext vizsgaremekContext,
+    IMapper mapper,
+    UserManager<User> userManager) 
+    : IUserService
 {
     public async Task<List<UserReadDto>> SearchAsync(string query, int limit, int offset)
     {
@@ -31,9 +36,14 @@ public class UserService(VizsgaremekContext vizsgaremekContext, IMapper mapper) 
     {
         User newUser = mapper.Map<User>(dto);
         
-        await vizsgaremekContext.Users.AddAsync(newUser);
+        await userManager
+            .CreateAsync(newUser,
+                dto.Password 
+                ?? throw new ArgumentException("Password is required when creating a new user"));
         
-        await vizsgaremekContext.SaveChangesAsync();
+        //await vizsgaremekContext.Users.AddAsync(newUser);
+        
+        //await vizsgaremekContext.SaveChangesAsync();
     }
     
     public async Task PutAsync(Guid id, UserWriteDto dto)
@@ -50,9 +60,11 @@ public class UserService(VizsgaremekContext vizsgaremekContext, IMapper mapper) 
     {
         User user = await vizsgaremekContext.Users.SingleAsync(x => x.Id == id);
         
-        vizsgaremekContext.Users.Remove(user);
+        await userManager.DeleteAsync(user);
         
-        await vizsgaremekContext.SaveChangesAsync();
+        //vizsgaremekContext.Users.Remove(user);
+        
+        //await vizsgaremekContext.SaveChangesAsync();
     }
     
     public async Task<KolcsonzesReadDto[]> GetKolcsonzesekAsync(Guid id)
