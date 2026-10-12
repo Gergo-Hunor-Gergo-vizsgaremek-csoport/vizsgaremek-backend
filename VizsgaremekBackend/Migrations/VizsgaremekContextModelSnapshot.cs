@@ -318,7 +318,7 @@ namespace VizsgaremekBackend.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("parentid");
 
-                    b.Property<DateTime>("SelejtedDate")
+                    b.Property<DateTime?>("SelejtedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("selejteddate");
 
