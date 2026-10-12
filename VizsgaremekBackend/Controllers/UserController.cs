@@ -1,13 +1,15 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Interfaces;
+using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
 namespace VizsgaremekBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService, UserRoleService userRoleService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<UserReadDto>>> SearchAsync(string? q, int? limit, int? offset)
@@ -72,5 +74,34 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(await userService.GetFelelossegekAsync(id));
 
     }
-    
+
+    [HttpPut("{id:guid}/SysAdmin")]
+    public async Task<ActionResult> SetSysAdminRoleAsync(Guid id, bool set = true)
+    {
+        UserReadDto userDto = await userService.GetAsync(id);
+        User user = mapper.Map<User>(userDto);
+        await userRoleService.SetSysAdminRoleAsync(user, set);
+        
+        return Ok();
+    }
+
+    [HttpPut("{id:guid}/UserAdmin")]
+    public async Task<ActionResult> SetUserAdminRoleAsync(Guid id, bool set = true)
+    {
+        UserReadDto userDto = await userService.GetAsync(id);
+        User user = mapper.Map<User>(userDto);
+        await userRoleService.SetUserAdminRoleAsync(user, set);
+        
+        return Ok();
+    }
+
+    [HttpPut("{id:guid}/DeviceAdmin")]
+    public async Task<ActionResult> SetDeviceAdminRoleAsync(Guid id, bool set = true)
+    {
+        UserReadDto userDto = await userService.GetAsync(id);
+        User user = mapper.Map<User>(userDto);
+        await userRoleService.SetDeviceAdminRoleAsync(user, set);
+        
+        return Ok();
+    }
 }
