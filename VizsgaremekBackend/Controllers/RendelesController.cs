@@ -36,4 +36,17 @@ public class RendelesController(RendelesService rendelesService) : ControllerBas
         await rendelesService.DeleteAsync(id);
         return NoContent();
     }
+
+    //kölcsönzéseket csinál a kiválasztott példányokból a rendeléshez
+    [HttpPost("{id:guid}/assign")]
+    public async Task<ActionResult<KolcsonzesReadDto[]>> AssignPeldanyAsync(KolcsonzesWriteDto[] kolcsonzesWriteDtos)
+    {
+        if (kolcsonzesWriteDtos.Length == 0)
+        {
+            return BadRequest("Array size should be greater than 0");
+        }
+
+        var createdKolcsonzesek = await rendelesService.AssignPeldanysAsync(kolcsonzesWriteDtos);
+        return Created($"/api/kolcsonzes/{createdKolcsonzesek[0].Id}",createdKolcsonzesek);
+    }
 }
