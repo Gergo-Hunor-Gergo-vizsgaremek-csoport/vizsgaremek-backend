@@ -62,6 +62,7 @@ public class TypeService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
             .Include(x => x.Peldanys)
             .Single(x => x.Id == id)
             .Peldanys
+            .Where(x=>x.ActiveKolcsonzesId == null)
             .Skip(offset).Take(limit)
             .Select(x => mapper.Map<PeldanyReadDto>(x))
             .ToArray();

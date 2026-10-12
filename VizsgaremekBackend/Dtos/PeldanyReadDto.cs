@@ -10,6 +10,8 @@ public class PeldanyReadDto
     
     public DateTime? ManufacturingDate { get; set; }
     
+    public string SerialNumber { get; set; }
+    
     public bool IsHibas { get; set; }
     
     public bool IsSelejt { get; set; }

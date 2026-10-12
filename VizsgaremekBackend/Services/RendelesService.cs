@@ -40,4 +40,22 @@ public class RendelesService(VizsgaremekContext vizsgaremekContext, IMapper mapp
         
         await vizsgaremekContext.SaveChangesAsync();
     }
+    
+    public async Task<KolcsonzesReadDto[]>AssignPeldanysAsync(KolcsonzesWriteDto[] kolcsonzesWriteDtos)
+    {
+        KolcsonzesReadDto[] kolcsonzesReadDtos = new KolcsonzesReadDto[kolcsonzesWriteDtos.Length];
+        for (int i = 0; i < kolcsonzesWriteDtos.Length; i++)
+        {
+            Kolcsonzes kolcsonzes = mapper.Map<Kolcsonzes>(kolcsonzesWriteDtos[i]);
+            
+            Peldany peldany = await vizsgaremekContext.Peldanys.SingleAsync(x => x.Id == kolcsonzes.PeldanyId);
+            peldany.ActiveKolcsonzesId = kolcsonzes.Id;
+            
+            await vizsgaremekContext.Kolcsonzess.AddAsync(kolcsonzes);
+            kolcsonzesReadDtos[i] = mapper.Map<KolcsonzesReadDto>(kolcsonzes);
+        }
+        
+        await vizsgaremekContext.SaveChangesAsync();
+        return kolcsonzesReadDtos;
+    }
 }

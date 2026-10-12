@@ -12,9 +12,6 @@ public class KolcsonzesWriteDto
     public Guid UserId { get; set; }
     
     [Required]
-    public bool IsActive { get; set; }
-    
-    [Required]
     public DateTime Date { get; set; }
     
     public DateTime? ExpirationDate { get; set; }
