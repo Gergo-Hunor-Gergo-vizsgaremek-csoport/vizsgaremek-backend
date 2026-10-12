@@ -36,13 +36,15 @@ public class UserService(
     {
         User newUser = mapper.Map<User>(dto);
         
-        await userManager
+        IdentityResult result = await userManager
             .CreateAsync(newUser,
                 dto.Password 
                 ?? throw new ArgumentException("Password is required when creating a new user"));
-        
+
+        if (!result.Succeeded) throw new Exception(String.Join(',', result.Errors.Select(x => x.Description)));
+
         //await vizsgaremekContext.Users.AddAsync(newUser);
-        
+
         //await vizsgaremekContext.SaveChangesAsync();
     }
     

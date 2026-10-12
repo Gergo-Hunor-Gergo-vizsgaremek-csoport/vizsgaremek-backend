@@ -8,7 +8,7 @@ public class UserWriteDto
 {
     [MaxLength(50)]
     [Required]
-    public string Name { get; set; }
+    public string UserName { get; set; }
     
     [MaxLength(50)]
     [Required]

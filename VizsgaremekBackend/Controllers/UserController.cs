@@ -78,9 +78,7 @@ public class UserController(IUserService userService, UserRoleService userRoleSe
     [HttpPut("{id:guid}/SysAdmin")]
     public async Task<ActionResult> SetSysAdminRoleAsync(Guid id, bool set = true)
     {
-        UserReadDto userDto = await userService.GetAsync(id);
-        User user = mapper.Map<User>(userDto);
-        await userRoleService.SetSysAdminRoleAsync(user, set);
+        await userRoleService.SetSysAdminRoleAsync(id, set);
         
         return Ok();
     }
@@ -88,9 +86,7 @@ public class UserController(IUserService userService, UserRoleService userRoleSe
     [HttpPut("{id:guid}/UserAdmin")]
     public async Task<ActionResult> SetUserAdminRoleAsync(Guid id, bool set = true)
     {
-        UserReadDto userDto = await userService.GetAsync(id);
-        User user = mapper.Map<User>(userDto);
-        await userRoleService.SetUserAdminRoleAsync(user, set);
+        await userRoleService.SetUserAdminRoleAsync(id, set);
         
         return Ok();
     }
@@ -98,9 +94,7 @@ public class UserController(IUserService userService, UserRoleService userRoleSe
     [HttpPut("{id:guid}/DeviceAdmin")]
     public async Task<ActionResult> SetDeviceAdminRoleAsync(Guid id, bool set = true)
     {
-        UserReadDto userDto = await userService.GetAsync(id);
-        User user = mapper.Map<User>(userDto);
-        await userRoleService.SetDeviceAdminRoleAsync(user, set);
+        await userRoleService.SetDeviceAdminRoleAsync(id, set);
         
         return Ok();
     }
