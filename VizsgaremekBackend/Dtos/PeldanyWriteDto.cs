@@ -17,6 +17,7 @@ public class PeldanyWriteDto
     
     public DateTime SelejtedDate { get; set; }
     
+    public string SerialNumber { get; set; }
     
     public Guid TypeId { get; set; }
     
