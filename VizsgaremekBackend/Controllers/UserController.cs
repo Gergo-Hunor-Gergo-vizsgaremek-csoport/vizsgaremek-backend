@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Interfaces;
@@ -9,7 +8,7 @@ namespace VizsgaremekBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(IUserService userService, UserRoleService userRoleService, IMapper mapper) : ControllerBase
+public class UserController(IUserService userService, IUserRoleService userRoleService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<UserReadDto>>> SearchAsync(string? q, int? limit, int? offset)

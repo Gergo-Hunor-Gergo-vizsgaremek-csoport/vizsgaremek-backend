@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Identity;
+using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
 
 namespace VizsgaremekBackend.Services;
 
-public class UserRoleService(UserManager<User> userManager)
+public class UserRoleService(UserManager<User> userManager) : IUserRoleService
 {
     
     public async Task SetRoleAsync(Guid userId, string role, bool set = true)
