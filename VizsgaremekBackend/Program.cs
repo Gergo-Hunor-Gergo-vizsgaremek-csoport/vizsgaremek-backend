@@ -52,6 +52,10 @@ public class Program
 
                 // User settings
                 options.User.RequireUniqueEmail = true; 
+                
+                
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
             })
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<VizsgaremekContext>();
