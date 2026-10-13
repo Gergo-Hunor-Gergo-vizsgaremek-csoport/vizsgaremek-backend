@@ -1,12 +1,28 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using VizsgaremekBackend.Data;
+using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
 namespace VizsgaremekBackend;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task SeedRolesAsync(RoleManager<IdentityRole<Guid>> roleManager)
+    {
+        string[] roleNames = ["SysAdmin", "UserAdmin", "DeviceAdmin"];
+
+        foreach (var roleName in roleNames)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
+            }
+        }
+    }
+    
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +36,31 @@ public class Program
                 .LogTo(Console.WriteLine, LogLevel.Information)
                 .UseLowerCaseNamingConvention();
         });
+        
+        // Auth
+        builder.Services.AddIdentityApiEndpoints<User>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+
+                // User settings
+                options.User.RequireUniqueEmail = true; 
+                
+                
+                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedEmail = false;
+            })
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<VizsgaremekContext>();
+        
         
         builder.Services.AddAutoMapper(_ => {}, typeof(Program).Assembly);
 
@@ -39,7 +80,26 @@ public class Program
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
         
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please enter token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+
+            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecuritySchemeReference("Bearer", document),
+                    []
+                }
+            });
+        });
 
         // Allow frontend to query backend
         builder.Services.AddCors(options =>
@@ -54,6 +114,15 @@ public class Program
         });
 
         var app = builder.Build();
+
+        // Seed identity roles on startup
+        using (IServiceScope scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider
+                .GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+            await SeedRolesAsync(roleManager);
+        }
         
         app.UseCors("AllowFrontend");
         
@@ -84,7 +153,11 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
+
+        app.MapGroup("/auth")
+            .MapIdentityApi<User>();
 
 
         app.MapControllers();

@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Interfaces;
+using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
 namespace VizsgaremekBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService, IUserRoleService userRoleService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<List<UserReadDto>>> SearchAsync(string? q, int? limit, int? offset)
@@ -72,5 +73,28 @@ public class UserController(IUserService userService) : ControllerBase
         return Ok(await userService.GetFelelossegekAsync(id));
 
     }
-    
+
+    [HttpPut("{id:guid}/SysAdmin")]
+    public async Task<ActionResult> SetSysAdminRoleAsync(Guid id, bool set = true)
+    {
+        await userRoleService.SetSysAdminRoleAsync(id, set);
+        
+        return Ok();
+    }
+
+    [HttpPut("{id:guid}/UserAdmin")]
+    public async Task<ActionResult> SetUserAdminRoleAsync(Guid id, bool set = true)
+    {
+        await userRoleService.SetUserAdminRoleAsync(id, set);
+        
+        return Ok();
+    }
+
+    [HttpPut("{id:guid}/DeviceAdmin")]
+    public async Task<ActionResult> SetDeviceAdminRoleAsync(Guid id, bool set = true)
+    {
+        await userRoleService.SetDeviceAdminRoleAsync(id, set);
+        
+        return Ok();
+    }
 }

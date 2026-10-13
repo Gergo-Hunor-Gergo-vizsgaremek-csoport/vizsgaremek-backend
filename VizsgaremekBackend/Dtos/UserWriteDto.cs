@@ -8,32 +8,16 @@ public class UserWriteDto
 {
     [MaxLength(50)]
     [Required]
-    public string Name { get; set; }
+    public string UserName { get; set; }
     
     [MaxLength(50)]
     [Required]
+    [EmailAddress]
     public string Email { get; set; }
     
     /// <summary>
-    /// Gives the user unlimited permissions (some actions are only possible with this)
+    /// Required when creating a new user. Ignored when updating.
     /// </summary>
-    [Required]
-    public bool IsSysAdmin { get; set; }
-    
-    /// <summary>
-    /// Can asssign peldanys to users
-    /// Can add new peldanys
-    /// Can mark peldanys for "selejt"
-    /// </summary>
-    [Required]
-    public bool IsDeviceAdmin { get; set; }
-    
-    /// <summary>
-    /// Can add users
-    /// Can view any user data
-    /// Can modify user data
-    /// Can NOT modify permitions
-    /// </summary>
-    [Required]
-    public bool IsUserAdmin { get; set; }
+    [MinLength(8)]
+    public string? Password { get; set; }
 }

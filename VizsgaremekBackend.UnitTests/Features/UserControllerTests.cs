@@ -25,13 +25,14 @@ public class UserControllerTests
             },
         ];
         
+        Mock<IUserRoleService> userRoleServiceMock = new();
         Mock<IUserService> userServiceMock = new();
         
         userServiceMock
             .Setup(x => x.SearchAsync("test", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(expectedResult);
         
-        UserController controller = new(userServiceMock.Object);
+        UserController controller = new(userServiceMock.Object, userRoleServiceMock.Object);
 
         //Act
         
