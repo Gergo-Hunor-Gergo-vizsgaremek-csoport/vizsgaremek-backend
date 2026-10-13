@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.IntegrationTests.Infrastructure;
@@ -13,7 +14,7 @@ public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
     public async Task SearchAsync_WhenUserExists_ReturnsUser()
     {
         //Arrange
-        await using VizsgaremekContext dbContext = new(fixture.DbContextOptions);
+        await using VizsgaremekContext dbContext = fixture.CreateDbContext();
 
         User user = new()
         {
@@ -25,7 +26,9 @@ public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         await dbContext.Users.AddAsync(user);
         await dbContext.SaveChangesAsync();
 
-        UserService userService = new(dbContext, fixture.Mapper);
+        UserManager<User> userManager = fixture.UserManager;
+
+        UserService userService = new(dbContext, fixture.Mapper, userManager);
         
         //Act
         var res = await userService.SearchAsync(user.UserName, 5, 0);
