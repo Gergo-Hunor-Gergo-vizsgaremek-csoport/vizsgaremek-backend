@@ -37,3 +37,4 @@ jobs:
           name: .NET Test Results
           path: '**/*.trx'
           reporter: dotnet-trx
+          use-actions-summary: 'false'  # Prevents merging only into job summary
