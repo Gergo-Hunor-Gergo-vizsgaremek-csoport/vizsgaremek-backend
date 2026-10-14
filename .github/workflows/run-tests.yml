@@ -1,0 +1,39 @@
+name: Run ASP.NET Tests
+
+on:
+  pull_request:
+    
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x' # Specify your .NET version (e.g., 6.0.x, 7.0.x, 8.0.x)
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx"
+        
+      - name: Report Test Results
+        uses: dorny/test-reporter@v1
+        if: always() # Ensures report generates even if tests failed
+        with:
+          name: .NET Test Results
+          path: '**/*.trx'
+          reporter: dotnet-trx
