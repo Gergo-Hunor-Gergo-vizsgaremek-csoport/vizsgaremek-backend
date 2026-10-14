@@ -9,18 +9,6 @@ namespace VizsgaremekBackend;
 
 public class Program
 {
-    public static async Task SeedRolesAsync(RoleManager<IdentityRole<Guid>> roleManager)
-    {
-        string[] roleNames = ["SysAdmin", "UserAdmin", "DeviceAdmin"];
-
-        foreach (var roleName in roleNames)
-        {
-            if (!await roleManager.RoleExistsAsync(roleName))
-            {
-                await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
-            }
-        }
-    }
     
     public static async Task Main(string[] args)
     {
@@ -76,7 +64,11 @@ public class Program
             .WithScopedLifetime()
         );
 
-        builder.Services.AddControllers();
+        
+        builder.Services.AddControllers()
+            .AddControllersAsServices();
+        
+        
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
         
@@ -115,15 +107,6 @@ public class Program
 
         var app = builder.Build();
 
-        // Seed identity roles on startup
-        using (IServiceScope scope = app.Services.CreateScope())
-        {
-            var roleManager = scope.ServiceProvider
-                .GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-
-            await SeedRolesAsync(roleManager);
-        }
-        
         app.UseCors("AllowFrontend");
         
         /*
