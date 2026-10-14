@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Testcontainers.PostgreSql;
+using VizsgaremekBackend.Controllers;
 using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
@@ -31,10 +32,10 @@ public class DatabaseFixture : IAsyncLifetime
         */
 
         // Apply migrations to prepare schema
-        using var scope = Factory.Services.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<VizsgaremekContext>();
-        await context.Database.MigrateAsync();
-        
+        using IServiceScope scope = Factory.Services.CreateScope();
+        AdminController adminController = scope.ServiceProvider.GetRequiredService<AdminController>();
+        await adminController.MigrateDatabase();
+
         /*
         UserManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
