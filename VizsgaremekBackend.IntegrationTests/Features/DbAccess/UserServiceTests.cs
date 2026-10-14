@@ -6,7 +6,7 @@ using VizsgaremekBackend.IntegrationTests.Infrastructure;
 using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
-namespace VizsgaremekBackend.IntegrationTests.Features.DbAcces;
+namespace VizsgaremekBackend.IntegrationTests.Features.DbAccess;
 
 public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {

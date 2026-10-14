@@ -18,7 +18,7 @@ public class UserControllerTests
             {
                 Id = new Guid(),
                 Email = "user@example.com",
-                Name = "test",
+                Username = "test",
                 IsDeviceAdmin = false,
                 IsSysAdmin = false,
                 IsUserAdmin = false,
