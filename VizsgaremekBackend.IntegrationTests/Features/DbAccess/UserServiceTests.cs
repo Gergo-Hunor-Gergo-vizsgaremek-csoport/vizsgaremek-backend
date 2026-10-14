@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.IntegrationTests.Infrastructure;
+using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
@@ -32,10 +33,10 @@ public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         
         IMapper mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-        UserService userService = scope.ServiceProvider.GetRequiredService<UserService>();
+        IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
         
         //Act
-        var res = await userService.SearchAsync(user.UserName, 5, 0);
+        List<UserReadDto> res = await userService.SearchAsync(user.UserName, 5, 0);
 
         //Assert
         res.Should().NotBeNull();
