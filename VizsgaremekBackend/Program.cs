@@ -64,7 +64,11 @@ public class Program
             .WithScopedLifetime()
         );
 
-        builder.Services.AddControllers();
+        
+        builder.Services.AddControllers()
+            .AddControllersAsServices();
+        
+        
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
         
