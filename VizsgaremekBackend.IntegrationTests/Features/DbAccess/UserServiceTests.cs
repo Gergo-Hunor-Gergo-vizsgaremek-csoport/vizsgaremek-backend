@@ -1,5 +1,7 @@
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.IntegrationTests.Infrastructure;
@@ -14,7 +16,9 @@ public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
     public async Task SearchAsync_WhenUserExists_ReturnsUser()
     {
         //Arrange
-        await using VizsgaremekContext dbContext = fixture.CreateDbContext();
+        using IServiceScope scope = fixture.CreateScope();
+        
+        await using VizsgaremekContext dbContext = scope.ServiceProvider.GetRequiredService<VizsgaremekContext>();
 
         User user = new()
         {
@@ -25,10 +29,10 @@ public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         
         await dbContext.Users.AddAsync(user);
         await dbContext.SaveChangesAsync();
+        
+        IMapper mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-        UserManager<User> userManager = fixture.UserManager;
-
-        UserService userService = new(dbContext, fixture.Mapper, userManager);
+        UserService userService = scope.ServiceProvider.GetRequiredService<UserService>();
         
         //Act
         var res = await userService.SearchAsync(user.UserName, 5, 0);
@@ -38,7 +42,7 @@ public class UserServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         
         res.Should().ContainSingle()
             .Which.Should()
-            .BeEquivalentTo(fixture.Mapper.Map<UserReadDto>(user));
+            .BeEquivalentTo(mapper.Map<UserReadDto>(user));
         
     }
     
