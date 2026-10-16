@@ -28,6 +28,7 @@ public class AdminController(VizsgaremekContext db, RoleManager<IdentityRole<Gui
         return Ok();
     }
     
+    [NonAction]
     public async Task SeedRolesAsync()
     {
         string[] roleNames = ["SysAdmin", "UserAdmin", "DeviceAdmin"];
