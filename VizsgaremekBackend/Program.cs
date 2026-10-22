@@ -141,6 +141,12 @@ public class Program
 
         app.MapGroup("/auth")
             .MapIdentityApi<User>();
+        
+        app.MapPost("/auth/logout", async (SignInManager<User> signInManager) =>
+        {
+            await signInManager.SignOutAsync();
+            return Results.Ok();
+        }).RequireAuthorization(); // Requires the user to be logged in to log out
 
 
         app.MapControllers();
