@@ -11,7 +11,7 @@ public class LogService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
     public async Task<List<LogReadDto>> SearchAsync(string query, int limit, int offset)
     {
         return (await vizsgaremekContext.Logs
-                .Where(x => x.Type.Contains(query))
+                .Where(x => x.Type.ToLower().Contains(query.ToLower()))
                 .Skip(offset)
                 .Take(limit)
                 .ToArrayAsync())
