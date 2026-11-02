@@ -1,3 +1,4 @@
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -27,12 +28,13 @@ public class UserControllerTests
         
         Mock<IUserRoleService> userRoleServiceMock = new();
         Mock<IUserService> userServiceMock = new();
+        Mock<IMapper> mapperMock = new();
         
         userServiceMock
             .Setup(x => x.SearchAsync("test", It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync(expectedResult);
         
-        UserController controller = new(userServiceMock.Object, userRoleServiceMock.Object);
+        UserController controller = new(userServiceMock.Object, userRoleServiceMock.Object, mapperMock.Object);
 
         //Act
         
