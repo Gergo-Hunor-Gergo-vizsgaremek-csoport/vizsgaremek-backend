@@ -1,5 +1,7 @@
 ﻿name: Auto Add to Project
 
+permissions: {}
+
 on:
   issues:
     types: [opened]
