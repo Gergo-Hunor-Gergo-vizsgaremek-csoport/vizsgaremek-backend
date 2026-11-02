@@ -17,7 +17,7 @@ public class UserService(
     public async Task<List<UserReadDto>> SearchAsync(string query, int limit, int offset)
     {
         return ( await vizsgaremekContext.Users
-                .Where(x => x.UserName.Contains(query))
+                .Where(x => x.UserName != null && x.UserName.ToLower().Contains(query.ToLower()))
                 .Skip(offset)
                 .Take(limit)
                 .ToArrayAsync())

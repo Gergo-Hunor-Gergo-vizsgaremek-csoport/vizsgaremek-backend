@@ -11,7 +11,7 @@ public class TypeService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
     public async Task<List<TypeReadDto>> SearchAsync(string query, int limit, int offset)
     {
         return ( await vizsgaremekContext.Types
-            .Where(x => x.Name.Contains(query))
+            .Where(x => x.Name.ToLower().Contains(query.ToLower()))
             .Skip(offset)
             .Take(limit)
             .ToArrayAsync())
