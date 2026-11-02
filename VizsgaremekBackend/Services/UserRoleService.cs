@@ -1,4 +1,7 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
 
@@ -6,6 +9,14 @@ namespace VizsgaremekBackend.Services;
 
 public class UserRoleService(UserManager<User> userManager) : IUserRoleService
 {
+    /// <inheritdoc />
+    public async Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal)
+    {
+        User user = (await userManager.GetUserAsync(claimsPrincipal)) 
+                    ?? throw new NotLoggedInException();
+
+        return user;
+    }
     
     public async Task SetRoleAsync(Guid userId, string role, bool set = true)
     {

@@ -1,15 +1,27 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
-using VizsgaremekBackend.Services;
 
 namespace VizsgaremekBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(IUserService userService, IUserRoleService userRoleService) : ControllerBase
+public class UserController(IUserService userService, IUserRoleService userRoleService, IMapper mapper) : ControllerBase
 {
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<ActionResult<UserReadDto>> CurrentUserAsync()
+    {
+        User user = await userRoleService.GetCurrentUserAsync(User);
+        
+        UserReadDto dto = mapper.Map<UserReadDto>(user);
+        
+        return Ok(dto);
+    }
+    
     [HttpGet]
     public async Task<ActionResult<List<UserReadDto>>> SearchAsync(string? q, int? limit, int? offset)
     {
