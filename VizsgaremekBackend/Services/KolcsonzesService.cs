@@ -15,13 +15,15 @@ public class KolcsonzesService(VizsgaremekContext vizsgaremekContext, IMapper ma
         return mapper.Map<KolcsonzesReadDto>(result);
     }
     
-    public async Task PostAsync(KolcsonzesWriteDto dto)
+    public async Task<KolcsonzesReadDto> PostAsync(KolcsonzesWriteDto dto)
     {
         Kolcsonzes newKolcsonzes = mapper.Map<Kolcsonzes>(dto);
         
         await vizsgaremekContext.Kolcsonzess.AddAsync(newKolcsonzes);
         
         await vizsgaremekContext.SaveChangesAsync();
+        
+        return mapper.Map<KolcsonzesReadDto>(newKolcsonzes);
     }
     
     public async Task PutAsync(Guid id, KolcsonzesWriteDto dto)
