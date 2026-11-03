@@ -133,6 +133,9 @@ public class Program
 
             app.UseSwagger();
             app.UseSwaggerUI();
+
+            //redirect / to /swagger
+            app.MapGet("/", () => Results.Redirect("/swagger"));
         }
 
         app.UseHttpsRedirection();
