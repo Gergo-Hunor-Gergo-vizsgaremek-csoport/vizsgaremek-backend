@@ -22,6 +22,32 @@ public class UserController(IUserService userService, IUserRoleService userRoleS
         return Ok(dto);
     }
     
+    
+    [Authorize]
+    [HttpGet("me/kolcsonzesek")]
+    public async Task<ActionResult<KolcsonzesReadDto[]>> CurrentUserKolcsonzesekAsync()
+    {
+        User user = await userRoleService.GetCurrentUserAsync(User);
+        return Ok(await userService.GetKolcsonzesekAsync(user.Id));
+    }
+    
+    [Authorize]
+    [HttpGet("me/rendelesek")]
+    public async Task<ActionResult<KolcsonzesReadDto[]>> CurrentUserRendelesekAsync()
+    {
+        User user = await userRoleService.GetCurrentUserAsync(User);
+        return Ok(await userService.GetRendelesekAsync(user.Id));
+    }
+    
+    [Authorize]
+    [HttpGet("me/felelossegek")]
+    public async Task<ActionResult<KolcsonzesReadDto[]>> CurrentUserFelelossegekAsync()
+    {
+        User user = await userRoleService.GetCurrentUserAsync(User);
+        return Ok(await userService.GetFelelossegekAsync(user.Id));
+    }
+    
+    
     [HttpGet]
     public async Task<ActionResult<List<UserReadDto>>> SearchAsync(string? q, int? limit, int? offset)
     {
