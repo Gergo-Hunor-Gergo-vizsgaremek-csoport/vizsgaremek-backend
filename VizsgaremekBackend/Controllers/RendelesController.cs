@@ -40,14 +40,9 @@ public class RendelesController(RendelesService rendelesService) : ControllerBas
     //kölcsönzéseket csinál a kiválasztott példányokból a rendeléshez
     //ToDo részletes dokumentációt
     [HttpPost("{id:guid}/assign")]
-    public async Task<ActionResult<KolcsonzesReadDto[]>> AssignPeldanyAsync(KolcsonzesWriteDto[] kolcsonzesWriteDtos)
+    public async Task<ActionResult<KolcsonzesReadDto[]>> AssignPeldanyAsync(Guid id, [FromBody] KolcsonzesWriteDto[] kolcsonzesWriteDtos)
     {
-        if (kolcsonzesWriteDtos.Length == 0)
-        {
-            return BadRequest("Array size should be greater than 0");
-        }
-
-        var createdKolcsonzesek = await rendelesService.AssignPeldanysAsync(kolcsonzesWriteDtos);
+        var createdKolcsonzesek = await rendelesService.AssignPeldanysAsync(id, kolcsonzesWriteDtos);
         return Created($"/Kolcsonzes/{createdKolcsonzesek[0].Id}", createdKolcsonzesek);
     }
 }

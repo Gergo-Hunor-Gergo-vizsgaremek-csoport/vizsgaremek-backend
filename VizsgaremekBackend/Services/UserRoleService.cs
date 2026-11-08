@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
@@ -12,28 +11,42 @@ public class UserRoleService(UserManager<User> userManager) : IUserRoleService
     /// <inheritdoc />
     public async Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal)
     {
-        User user = (await userManager.GetUserAsync(claimsPrincipal)) 
+        User user = (await userManager.GetUserAsync(claimsPrincipal))
                     ?? throw new NotLoggedInException();
 
         return user;
     }
-    
+
     public async Task SetRoleAsync(Guid userId, string role, bool set = true)
     {
-        User user = await userManager.FindByIdAsync(userId.ToString());
-        
-        await (set
-            ? userManager.AddToRoleAsync(user, role)
-            : userManager.RemoveFromRoleAsync(user, role));
+        if (string.IsNullOrWhiteSpace(role))
+            throw new BadRequestException("Role must not be empty.");
+
+        User user = await userManager.FindByIdAsync(userId.ToString())
+            ?? throw new NotFoundException(nameof(User), userId);
+
+        IdentityResult result = set
+            ? await userManager.AddToRoleAsync(user, role)
+            : await userManager.RemoveFromRoleAsync(user, role);
+
+        if (!result.Succeeded)
+        {
+            var errors = result.Errors.ToArray();
+            var message = string.Join(", ", errors.Select(x => x.Description));
+
+            if (errors.Any(x => x.Code is "UserAlreadyInRole" or "UserNotInRole"))
+                throw new ConflictException(message);
+
+            throw new BadRequestException(message);
+        }
     }
-    
-    public async Task SetSysAdminRoleAsync(Guid user, bool set = true) 
+
+    public async Task SetSysAdminRoleAsync(Guid user, bool set = true)
         => await SetRoleAsync(user, "SysAdmin", set);
-    
-    public async Task SetUserAdminRoleAsync(Guid user, bool set = true) 
+
+    public async Task SetUserAdminRoleAsync(Guid user, bool set = true)
         => await SetRoleAsync(user, "UserAdmin", set);
-    
-    public async Task SetDeviceAdminRoleAsync(Guid user, bool set = true) 
+
+    public async Task SetDeviceAdminRoleAsync(Guid user, bool set = true)
         => await SetRoleAsync(user, "DeviceAdmin", set);
-    
 }

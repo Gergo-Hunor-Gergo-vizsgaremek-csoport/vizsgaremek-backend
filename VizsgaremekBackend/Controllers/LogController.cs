@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
+using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Services;
 
 namespace VizsgaremekBackend.Controllers;
@@ -13,17 +14,19 @@ public class LogController(LogService logService) : ControllerBase
     {
         const int maxResults = 100;
         const int defaultLimit = 50;
-        
-        if (limit > maxResults) return BadRequest($"Limit may not be more than {maxResults}");
-        limit ??= defaultLimit;
 
+        if (limit is > maxResults) throw new BadRequestException($"Limit may not be more than {maxResults}.");
+        if (limit is < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
+        if (offset is < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
+
+        limit ??= defaultLimit;
         offset ??= 0;
-        q ??= "";
-        
-        List<LogReadDto> result = await logService.SearchAsync(q, (int)limit, (int)offset);
+        q ??= string.Empty;
+
+        List<LogReadDto> result = await logService.SearchAsync(q, limit.Value, offset.Value);
         return Ok(result);
     }
-    
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<LogReadDto>> GetAsync(Guid id)
     {
@@ -34,7 +37,6 @@ public class LogController(LogService logService) : ControllerBase
     public async Task<ActionResult> PostAsync([FromBody] LogWriteDto logWriteDto)
     {
         LogReadDto res = await logService.PostAsync(logWriteDto);
-
         return Created($"/Log/{res.Id}", res);
     }
 
@@ -51,5 +53,4 @@ public class LogController(LogService logService) : ControllerBase
         await logService.DeleteAsync(id);
         return NoContent();
     }
-    
 }
