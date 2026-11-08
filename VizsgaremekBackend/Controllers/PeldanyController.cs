@@ -17,9 +17,9 @@ public class PeldanyController(PeldanyService peldanyService) : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] PeldanyWriteDto peldanyWriteDto)
     {
-        await peldanyService.PostAsync(peldanyWriteDto);
+        PeldanyReadDto res = await peldanyService.PostAsync(peldanyWriteDto);
 
-        return Created();
+        return Created($"/Peldany/{res.Id}", res);
     }
 
     [HttpPut("{id:guid}")]

@@ -8,7 +8,7 @@ public interface IUserService
 
     public Task<UserReadDto> GetAsync(Guid id);
 
-    public Task PostAsync(UserWriteDto dto);
+    public Task<UserReadDto> PostAsync(UserWriteDto dto);
 
     public Task PutAsync(Guid id, UserWriteDto dto);
 

@@ -15,13 +15,15 @@ public class PeldanyService(VizsgaremekContext vizsgaremekContext, IMapper mappe
         return mapper.Map<PeldanyReadDto>(result);
     }
     
-    public async Task PostAsync(PeldanyWriteDto dto)
+    public async Task<PeldanyReadDto> PostAsync(PeldanyWriteDto dto)
     {
         Peldany newPeldany = mapper.Map<Peldany>(dto);
         
         await vizsgaremekContext.Peldanys.AddAsync(newPeldany);
         
         await vizsgaremekContext.SaveChangesAsync();
+
+        return mapper.Map<PeldanyReadDto>(newPeldany);
     }
     
     public async Task PutAsync(Guid id, PeldanyWriteDto dto)

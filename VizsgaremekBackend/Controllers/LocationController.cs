@@ -33,9 +33,9 @@ public class LocationController(LocationService locationService) : ControllerBas
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] LocationWriteDto locationWriteDto)
     {
-        await locationService.PostAsync(locationWriteDto);
+        LocationReadDto res = await locationService.PostAsync(locationWriteDto);
 
-        return Created();
+        return Created($"/Location/{res.Id}", res);
     }
 
     [HttpPut("{id:guid}")]

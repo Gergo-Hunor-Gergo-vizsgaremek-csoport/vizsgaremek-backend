@@ -73,9 +73,9 @@ public class UserController(IUserService userService, IUserRoleService userRoleS
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] UserWriteDto userWriteDto)
     {
-        await userService.PostAsync(userWriteDto);
+        UserReadDto res = await userService.PostAsync(userWriteDto);
 
-        return Created();
+        return Created($"/User/{res.Id}", res);
     }
 
     [HttpPut("{id:guid}")]

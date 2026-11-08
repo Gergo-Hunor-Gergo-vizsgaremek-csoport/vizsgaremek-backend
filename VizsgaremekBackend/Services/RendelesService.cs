@@ -41,6 +41,7 @@ public class RendelesService(VizsgaremekContext vizsgaremekContext, IMapper mapp
         await vizsgaremekContext.SaveChangesAsync();
     }
     
+    //ToDo részletes dokumentációt
     public async Task<KolcsonzesReadDto[]>AssignPeldanysAsync(KolcsonzesWriteDto[] kolcsonzesWriteDtos)
     {
         KolcsonzesReadDto[] kolcsonzesReadDtos = new KolcsonzesReadDto[kolcsonzesWriteDtos.Length];

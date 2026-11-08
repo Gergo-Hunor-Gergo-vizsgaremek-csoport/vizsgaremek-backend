@@ -19,7 +19,7 @@ public class RendelesController(RendelesService rendelesService) : ControllerBas
     public async Task<ActionResult> PostAsync(RendelesWriteDto rendelesWriteDto)
     {
         var createdRendeles = await rendelesService.PostAsync(rendelesWriteDto);
-        return Created($"/api/users/{createdRendeles.Id}", createdRendeles);
+        return Created($"/Rendeles/{createdRendeles.Id}", createdRendeles);
     }    
     
     
@@ -38,6 +38,7 @@ public class RendelesController(RendelesService rendelesService) : ControllerBas
     }
 
     //kölcsönzéseket csinál a kiválasztott példányokból a rendeléshez
+    //ToDo részletes dokumentációt
     [HttpPost("{id:guid}/assign")]
     public async Task<ActionResult<KolcsonzesReadDto[]>> AssignPeldanyAsync(KolcsonzesWriteDto[] kolcsonzesWriteDtos)
     {
@@ -47,6 +48,6 @@ public class RendelesController(RendelesService rendelesService) : ControllerBas
         }
 
         var createdKolcsonzesek = await rendelesService.AssignPeldanysAsync(kolcsonzesWriteDtos);
-        return Created($"/api/kolcsonzes/{createdKolcsonzesek[0].Id}",createdKolcsonzesek);
+        return Created($"/Kolcsonzes/{createdKolcsonzesek[0].Id}", createdKolcsonzesek);
     }
 }

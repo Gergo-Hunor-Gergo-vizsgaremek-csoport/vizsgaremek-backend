@@ -17,9 +17,9 @@ public class KolcsonzesController(KolcsonzesService kolcsonzesService) : Control
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] KolcsonzesWriteDto kolcsonzesWriteDto)
     {
-        await kolcsonzesService.PostAsync(kolcsonzesWriteDto);
+        KolcsonzesReadDto res = await kolcsonzesService.PostAsync(kolcsonzesWriteDto);
 
-        return Created();
+        return Created($"/Kolcsonzes/{res.Id}", res);
     }
 
     [HttpPut("{id:guid}")]

@@ -32,7 +32,7 @@ public class UserService(
         return mapper.Map<UserReadDto>(result);
     }
     
-    public async Task PostAsync(UserWriteDto dto)
+    public async Task<UserReadDto> PostAsync(UserWriteDto dto)
     {
         User newUser = mapper.Map<User>(dto);
         
@@ -46,6 +46,8 @@ public class UserService(
         //await vizsgaremekContext.Users.AddAsync(newUser);
 
         //await vizsgaremekContext.SaveChangesAsync();
+
+        return mapper.Map<UserReadDto>(newUser);
     }
     
     public async Task PutAsync(Guid id, UserWriteDto dto)

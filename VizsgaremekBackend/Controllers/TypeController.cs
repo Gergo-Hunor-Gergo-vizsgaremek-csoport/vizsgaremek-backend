@@ -33,9 +33,9 @@ public class TypeController(TypeService typeService) : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] TypeWriteDto typeWriteDto)
     {
-        await typeService.PostAsync(typeWriteDto);
+        TypeReadDto res = await typeService.PostAsync(typeWriteDto);
 
-        return Created();
+        return Created($"/Type/{res.Id}", res);
     }
 
     [HttpPut("{id:guid}")]
@@ -60,6 +60,7 @@ public class TypeController(TypeService typeService) : ControllerBase
         if (limit > maxResults) return BadRequest($"Limit may not be more than {maxResults}");
         
 
+        //TODo ???
         offset ??= 0;
         limit ??= defaultLimit;
         return Ok(await typeService.GetPeldanys(id,defaultLimit,0));
