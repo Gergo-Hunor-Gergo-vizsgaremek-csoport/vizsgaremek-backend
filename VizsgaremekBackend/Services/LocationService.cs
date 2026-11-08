@@ -26,13 +26,15 @@ public class LocationService(VizsgaremekContext vizsgaremekContext, IMapper mapp
         return mapper.Map<LocationReadDto>(result);
     }
     
-    public async Task PostAsync(LocationWriteDto dto)
+    public async Task<LocationReadDto> PostAsync(LocationWriteDto dto)
     {
         Location newLocation = mapper.Map<Location>(dto);
         
         await vizsgaremekContext.Locations.AddAsync(newLocation);
         
         await vizsgaremekContext.SaveChangesAsync();
+
+        return mapper.Map<LocationReadDto>(newLocation);
     }
     
     public async Task PutAsync(Guid id, LocationWriteDto dto)

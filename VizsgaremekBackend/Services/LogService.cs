@@ -25,13 +25,15 @@ public class LogService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
         return mapper.Map<LogReadDto>(result);
     }
     
-    public async Task PostAsync(LogWriteDto dto)
+    public async Task<LogReadDto> PostAsync(LogWriteDto dto)
     {
         Log newLog = mapper.Map<Log>(dto);
         
         await vizsgaremekContext.Logs.AddAsync(newLog);
         
         await vizsgaremekContext.SaveChangesAsync();
+
+        return mapper.Map<LogReadDto>(newLog);
     }
     
     public async Task PutAsync(Guid id, LogWriteDto dto)

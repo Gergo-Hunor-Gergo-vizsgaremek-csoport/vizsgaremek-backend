@@ -33,9 +33,9 @@ public class LogController(LogService logService) : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] LogWriteDto logWriteDto)
     {
-        await logService.PostAsync(logWriteDto);
+        LogReadDto res = await logService.PostAsync(logWriteDto);
 
-        return Created();
+        return Created($"/Log/{res.Id}", res);
     }
 
     [HttpPut("{id:guid}")]

@@ -26,13 +26,15 @@ public class TypeService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
         return mapper.Map<TypeReadDto>(result);
     }
     
-    public async Task PostAsync(TypeWriteDto dto)
+    public async Task<TypeReadDto> PostAsync(TypeWriteDto dto)
     {
         Type newType = mapper.Map<Type>(dto);
         
         await vizsgaremekContext.Types.AddAsync(newType);
         
         await vizsgaremekContext.SaveChangesAsync();
+
+        return mapper.Map<TypeReadDto>(newType);
     }
     
     public async Task PutAsync(Guid id, TypeWriteDto dto)
