@@ -14,7 +14,7 @@ public class TypeService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
             .Where(x => x.Name.ToLower().Contains(query.ToLower()))
             .CountAsync();
         
-        int pageCount = Convert.ToInt32(Math.Ceiling((queryCount-offset)/(double)limit));
+        int pageCount = Convert.ToInt32(Math.Ceiling(queryCount/(double)limit));
         
         
         TypeReadDto[] items = vizsgaremekContext.Types
