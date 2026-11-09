@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using VizsgaremekBackend.Data;
+using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
@@ -67,8 +68,11 @@ public class Program
         
         builder.Services.AddControllers()
             .AddControllersAsServices();
-        
-        
+
+        builder.Services.AddProblemDetails();
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
         
@@ -107,6 +111,8 @@ public class Program
         });
 
         var app = builder.Build();
+
+        app.UseExceptionHandler();
 
         app.UseCors("AllowFrontend");
         

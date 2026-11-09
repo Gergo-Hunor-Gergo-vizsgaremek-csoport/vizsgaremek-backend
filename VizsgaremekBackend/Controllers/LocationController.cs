@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
+using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Services;
 
 namespace VizsgaremekBackend.Controllers;
@@ -13,17 +14,19 @@ public class LocationController(LocationService locationService) : ControllerBas
     {
         const int maxResults = 100;
         const int defaultLimit = 50;
-        
-        if (limit > maxResults) return BadRequest($"Limit may not be more than {maxResults}");
-        limit ??= defaultLimit;
 
+        if (limit is > maxResults) throw new BadRequestException($"Limit may not be more than {maxResults}.");
+        if (limit is < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
+        if (offset is < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
+
+        limit ??= defaultLimit;
         offset ??= 0;
-        q ??= "";
-        
-        List<LocationReadDto> result = await locationService.SearchAsync(q, (int)limit, (int)offset);
+        q ??= string.Empty;
+
+        List<LocationReadDto> result = await locationService.SearchAsync(q, limit.Value, offset.Value);
         return Ok(result);
     }
-    
+
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<LocationReadDto>> GetAsync(Guid id)
     {
@@ -34,7 +37,6 @@ public class LocationController(LocationService locationService) : ControllerBas
     public async Task<ActionResult> PostAsync([FromBody] LocationWriteDto locationWriteDto)
     {
         LocationReadDto res = await locationService.PostAsync(locationWriteDto);
-
         return Created($"/Location/{res.Id}", res);
     }
 
@@ -51,5 +53,4 @@ public class LocationController(LocationService locationService) : ControllerBas
         await locationService.DeleteAsync(id);
         return NoContent();
     }
-    
 }

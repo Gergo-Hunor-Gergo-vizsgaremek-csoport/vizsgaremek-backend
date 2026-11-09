@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
+using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
 
@@ -53,14 +54,16 @@ public class UserController(IUserService userService, IUserRoleService userRoleS
     {
         const int maxResults = 100;
         const int defaultLimit = 50;
-        
-        if (limit > maxResults) return BadRequest($"Limit may not be more than {maxResults}");
-        limit ??= defaultLimit;
 
+        if (limit is > maxResults) throw new BadRequestException($"Limit may not be more than {maxResults}.");
+        if (limit is < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
+        if (offset is < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
+
+        limit ??= defaultLimit;
         offset ??= 0;
-        q ??= "";
-        
-        List<UserReadDto> result = await userService.SearchAsync(q, (int)limit, (int)offset);
+        q ??= string.Empty;
+
+        List<UserReadDto> result = await userService.SearchAsync(q, limit.Value, offset.Value);
         return Ok(result);
     }
     
