@@ -7,19 +7,44 @@ namespace VizsgaremekBackend.Interfaces;
 
 public interface IUserRoleService
 {
+    /// <summary>
+    /// Resolves the currently authenticated user from the provided claims principal.
+    /// </summary>
+    /// <param name="claimsPrincipal">The claims principal representing the current request user (for example, <see cref="ControllerBase.User"/> in a controller).</param>
+    /// <returns>The resolved <see cref="User"/> entity.</returns>
+    /// <exception cref="NotLoggedInException">Thrown when no user can be resolved from <paramref name="claimsPrincipal"/>.</exception>
+    public Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal);
 
     /// <summary>
-    /// <para>Get current user</para>
-    /// <para>When calling from a controler, pass the User property inherited from <see cref="ControllerBase"/></para>
+    /// Adds or removes the <c>SysAdmin</c> role for a user.
     /// </summary>
-    /// <param name="claimsPrincipal"><see cref="ControllerBase.User"/></param>
-    /// <returns><see cref="User"/> object of current user</returns>
-    /// <exception cref="NotLoggedInException">thrown when not logged in</exception>
-    public Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal);
+    /// <param name="user">The unique identifier of the target user.</param>
+    /// <param name="set"><c>true</c> to add the role; <c>false</c> to remove it. Defaults to <c>true</c>.</param>
+    /// <returns>A task that represents the asynchronous role update operation.</returns>
+    /// <exception cref="BadRequestException">Thrown when the role operation fails with a non-conflict error.</exception>
+    /// <exception cref="NotFoundException">Thrown when no user exists with the specified <paramref name="user"/>.</exception>
+    /// <exception cref="ConflictException">Thrown when the user already has the role or does not have it when removal is requested.</exception>
     public Task SetSysAdminRoleAsync(Guid user, bool set = true);
 
+    /// <summary>
+    /// Adds or removes the <c>UserAdmin</c> role for a user.
+    /// </summary>
+    /// <param name="user">The unique identifier of the target user.</param>
+    /// <param name="set"><c>true</c> to add the role; <c>false</c> to remove it. Defaults to <c>true</c>.</param>
+    /// <returns>A task that represents the asynchronous role update operation.</returns>
+    /// <exception cref="BadRequestException">Thrown when the role operation fails with a non-conflict error.</exception>
+    /// <exception cref="NotFoundException">Thrown when no user exists with the specified <paramref name="user"/>.</exception>
+    /// <exception cref="ConflictException">Thrown when the user already has the role or does not have it when removal is requested.</exception>
     public Task SetUserAdminRoleAsync(Guid user, bool set = true);
 
+    /// <summary>
+    /// Adds or removes the <c>DeviceAdmin</c> role for a user.
+    /// </summary>
+    /// <param name="user">The unique identifier of the target user.</param>
+    /// <param name="set"><c>true</c> to add the role; <c>false</c> to remove it. Defaults to <c>true</c>.</param>
+    /// <returns>A task that represents the asynchronous role update operation.</returns>
+    /// <exception cref="BadRequestException">Thrown when the role operation fails with a non-conflict error.</exception>
+    /// <exception cref="NotFoundException">Thrown when no user exists with the specified <paramref name="user"/>.</exception>
+    /// <exception cref="ConflictException">Thrown when the user already has the role or does not have it when removal is requested.</exception>
     public Task SetDeviceAdminRoleAsync(Guid user, bool set = true);
-
 }

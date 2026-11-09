@@ -17,6 +17,16 @@ public class UserRoleService(UserManager<User> userManager) : IUserRoleService
         return user;
     }
 
+    /// <summary>
+    /// Adds or removes a named role for a user.
+    /// </summary>
+    /// <param name="userId">The unique identifier of the target user.</param>
+    /// <param name="role">The name of the role to add or remove.</param>
+    /// <param name="set"><c>true</c> to add the role; <c>false</c> to remove it. Defaults to <c>true</c>.</param>
+    /// <returns>A task that represents the asynchronous role update operation.</returns>
+    /// <exception cref="BadRequestException">Thrown when <paramref name="role"/> is empty, or when the identity operation fails with a non-conflict error.</exception>
+    /// <exception cref="NotFoundException">Thrown when no user exists with the specified <paramref name="userId"/>.</exception>
+    /// <exception cref="ConflictException">Thrown when the user already has the role (<c>UserAlreadyInRole</c>) or does not have it when removal is requested (<c>UserNotInRole</c>).</exception>
     public async Task SetRoleAsync(Guid userId, string role, bool set = true)
     {
         if (string.IsNullOrWhiteSpace(role))
@@ -41,12 +51,15 @@ public class UserRoleService(UserManager<User> userManager) : IUserRoleService
         }
     }
 
+    /// <inheritdoc />
     public async Task SetSysAdminRoleAsync(Guid user, bool set = true)
         => await SetRoleAsync(user, "SysAdmin", set);
 
+    /// <inheritdoc />
     public async Task SetUserAdminRoleAsync(Guid user, bool set = true)
         => await SetRoleAsync(user, "UserAdmin", set);
 
+    /// <inheritdoc />
     public async Task SetDeviceAdminRoleAsync(Guid user, bool set = true)
         => await SetRoleAsync(user, "DeviceAdmin", set);
 }
