@@ -11,10 +11,9 @@ public class LocationService(VizsgaremekContext vizsgaremekContext, IMapper mapp
 {
     public async Task<List<LocationReadDto>> SearchAsync(string query, int limit, int offset)
     {
+        ArgumentNullException.ThrowIfNull(query);
         if (limit < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
         if (offset < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
-
-        query ??= string.Empty;
 
         return (await vizsgaremekContext.Locations
                 .Where(x => x.Name.ToLower().Contains(query.ToLower()))
