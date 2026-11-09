@@ -15,6 +15,7 @@ public class UserService(
     UserManager<User> userManager)
     : IUserService
 {
+    /// <inheritdoc />
     public async Task<List<UserReadDto>> SearchAsync(string query, int limit, int offset)
     {
         ArgumentNullException.ThrowIfNull(query);
@@ -32,6 +33,7 @@ public class UserService(
             .ToList();
     }
 
+    /// <inheritdoc />
     public async Task<UserReadDto> GetAsync(Guid id)
     {
         User result = await vizsgaremekContext.Users.SingleOrDefaultAsync(x => x.Id == id)
@@ -40,6 +42,7 @@ public class UserService(
         return mapper.Map<UserReadDto>(result);
     }
 
+    /// <inheritdoc />
     public async Task<UserReadDto> PostAsync(UserWriteDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);
@@ -63,6 +66,7 @@ public class UserService(
         return mapper.Map<UserReadDto>(newUser);
     }
 
+    /// <inheritdoc />
     public async Task PutAsync(Guid id, UserWriteDto dto)
     {
         ArgumentNullException.ThrowIfNull(dto);
@@ -74,6 +78,7 @@ public class UserService(
         await vizsgaremekContext.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task DeleteAsync(Guid id)
     {
         User user = await userManager.FindByIdAsync(id.ToString())
@@ -84,6 +89,7 @@ public class UserService(
             throw new BadRequestException(string.Join(", ", result.Errors.Select(x => x.Description)));
     }
 
+    /// <inheritdoc />
     public async Task<KolcsonzesReadDto[]> GetKolcsonzesekAsync(Guid id)
     {
         User? user = await vizsgaremekContext.Users
@@ -97,6 +103,7 @@ public class UserService(
             .ToArray();
     }
 
+    /// <inheritdoc />
     public async Task<RendelesReadDto[]> GetRendelesekAsync(Guid id)
     {
         User? user = await vizsgaremekContext.Users
@@ -110,6 +117,7 @@ public class UserService(
             .ToArray();
     }
 
+    /// <inheritdoc />
     public async Task<PeldanyReadDto[]> GetFelelossegekAsync(Guid id)
     {
         User? user = await vizsgaremekContext.Users

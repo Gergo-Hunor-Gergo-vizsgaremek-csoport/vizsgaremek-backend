@@ -8,12 +8,24 @@ namespace VizsgaremekBackend.Controllers;
 [Route("[controller]")]
 public class PeldanyController(PeldanyService peldanyService) : ControllerBase
 {
+    /// <summary>
+    /// Retrieves an item instance (példány) by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the instance to retrieve.</param>
+    /// <returns>An HTTP 200 OK response containing the requested <see cref="PeldanyReadDto"/>.</returns>
+    /// <exception cref="VizsgaremekBackend.Exceptions.NotFoundException">Thrown when no instance exists with the specified <paramref name="id"/>.</exception>
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<PeldanyReadDto>> GetAsync(Guid id)
     {
         return Ok(await peldanyService.GetAsync(id));
     }
 
+    /// <summary>
+    /// Creates a new item instance (példány).
+    /// </summary>
+    /// <param name="peldanyWriteDto">The data used to create the instance.</param>
+    /// <returns>An HTTP 201 Created response containing the created <see cref="PeldanyReadDto"/> and its location.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="peldanyWriteDto"/> is <c>null</c>.</exception>
     [HttpPost]
     public async Task<ActionResult> PostAsync([FromBody] PeldanyWriteDto peldanyWriteDto)
     {
@@ -22,6 +34,14 @@ public class PeldanyController(PeldanyService peldanyService) : ControllerBase
         return Created($"/Peldany/{res.Id}", res);
     }
 
+    /// <summary>
+    /// Updates an existing item instance (példány).
+    /// </summary>
+    /// <param name="id">The unique identifier of the instance to update.</param>
+    /// <param name="peldanyWriteDto">The updated instance data.</param>
+    /// <returns>An HTTP 204 No Content response when the update succeeds.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="peldanyWriteDto"/> is <c>null</c>.</exception>
+    /// <exception cref="VizsgaremekBackend.Exceptions.NotFoundException">Thrown when no instance exists with the specified <paramref name="id"/>.</exception>
     [HttpPut("{id:guid}")]
     public async Task<ActionResult> PutAsync(Guid id, [FromBody] PeldanyWriteDto peldanyWriteDto)
     {
@@ -29,6 +49,12 @@ public class PeldanyController(PeldanyService peldanyService) : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes an item instance (példány) by its unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the instance to delete.</param>
+    /// <returns>An HTTP 204 No Content response when the deletion succeeds.</returns>
+    /// <exception cref="VizsgaremekBackend.Exceptions.NotFoundException">Thrown when no instance exists with the specified <paramref name="id"/>.</exception>
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> DeleteAsync(Guid id)
     {
