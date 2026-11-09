@@ -9,19 +9,27 @@ namespace VizsgaremekBackend.Services;
 
 public class TypeService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
 {
-    public async Task<List<TypeReadDto>> SearchAsync(string query, int limit, int offset)
+    public async Task<PagedDto<TypeReadDto>> SearchAsync(string query, int limit, int offset)
     {
         ArgumentNullException.ThrowIfNull(query);
         if (limit < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
         if (offset < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
 
-        return (await vizsgaremekContext.Types
+        int queryCount = await vizsgaremekContext.Types
+            .Where(x => x.Name.ToLower().Contains(query.ToLower()))
+            .CountAsync();
+        
+        int pageCount = Convert.ToInt32(Math.Ceiling(queryCount/(double)limit));
+        
+        TypeReadDto[] items = (await vizsgaremekContext.Types
                 .Where(x => x.Name.ToLower().Contains(query.ToLower()))
                 .Skip(offset)
                 .Take(limit)
                 .ToArrayAsync())
             .Select(mapper.Map<TypeReadDto>)
-            .ToList();
+            .ToArray();
+        
+        return new PagedDto<TypeReadDto>(items,pageCount);
     }
 
     public async Task<TypeReadDto> GetAsync(Guid id)

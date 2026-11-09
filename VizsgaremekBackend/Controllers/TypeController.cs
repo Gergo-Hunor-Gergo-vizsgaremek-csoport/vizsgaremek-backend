@@ -10,7 +10,7 @@ namespace VizsgaremekBackend.Controllers;
 public class TypeController(TypeService typeService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<TypeReadDto>>> SearchAsync(string? q, int? limit, int? offset)
+    public async Task<ActionResult<PagedDto<TypeReadDto>>> SearchAsync(string? q, int? limit, int? offset)
     {
         const int maxResults = 100;
         const int defaultLimit = 50;
@@ -23,7 +23,7 @@ public class TypeController(TypeService typeService) : ControllerBase
         offset ??= 0;
         q ??= string.Empty;
 
-        List<TypeReadDto> result = await typeService.SearchAsync(q, limit.Value, offset.Value);
+        PagedDto<TypeReadDto> result = await typeService.SearchAsync(q, limit.Value, offset.Value);
         return Ok(result);
     }
 
