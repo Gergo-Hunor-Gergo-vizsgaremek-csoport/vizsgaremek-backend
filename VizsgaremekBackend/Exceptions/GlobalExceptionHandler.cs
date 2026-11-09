@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace VizsgaremekBackend.Exceptions;
 
@@ -13,6 +14,11 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
     {
         var (statusCode, title, detail) = MapException(exception);
 
+        if (exception is BadHttpRequestException)
+        {
+            logger.LogDebug(exception, "Bad Request");
+            
+        }
         if (statusCode == StatusCodes.Status500InternalServerError)
         {
             logger.LogError(exception, "Unhandled exception");
@@ -40,6 +46,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             NotFoundException => (StatusCodes.Status404NotFound, "Not Found", exception.Message),
             ConflictException => (StatusCodes.Status409Conflict, "Conflict", exception.Message),
             BadRequestException => (StatusCodes.Status400BadRequest, "Bad Request", exception.Message),
+            BadHttpRequestException ex => (ex.StatusCode, "Bad Request", "The request could not be procesed."),
             DbUpdateConcurrencyException
                 => (StatusCodes.Status409Conflict, "Conflict", "The resource was modified by another request."),
             DbUpdateException dbEx when GetPostgresSqlState(dbEx) == "23505"
@@ -48,19 +55,21 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
                 => (StatusCodes.Status400BadRequest, "Bad Request", "The request references a related resource that does not exist."),
             DbUpdateException dbEx when GetPostgresSqlState(dbEx) == "23502"
                 => (StatusCodes.Status400BadRequest, "Bad Request", "A required value is missing."),
+#if !DEBUG
             _ => (StatusCodes.Status500InternalServerError, "Internal Server Error", "An unexpected error occurred.")
+#endif
         };
     }
 
     private static string? GetPostgresSqlState(DbUpdateException ex)
     {
         // Npgsql surfaces constraint violations as PostgresException with a SqlState.
-        var inner = ex.InnerException;
+        Exception? inner = ex.InnerException;
         while (inner != null)
         {
-            if (inner.GetType().Name == "PostgresException")
+            if (inner.GetType().Name == nameof(PostgresException))
             {
-                return inner.GetType().GetProperty("SqlState")?.GetValue(inner) as string;
+                return inner.GetType().GetProperty(nameof(PostgresException.SqlState))?.GetValue(inner) as string;
             }
             inner = inner.InnerException;
         }
