@@ -29,13 +29,13 @@ static class Program
         List<Guid> typeIds = await new TypeGenerator(httpClient).GenerateAsync(10);
 
         Console.WriteLine("Generating peldanyok...");
-        List<Guid> peldanyIds = await new PeldanyGenerator(httpClient).GenerateAsync(30, typeIds, userIds, locationIds);
+        PeldanyGenerationResult peldanyResult = await new PeldanyGenerator(httpClient).GenerateAsync(30, typeIds, userIds, locationIds);
 
         Console.WriteLine("Generating rendelesek...");
         List<Guid> rendelesIds = await new RendelesGenerator(httpClient).GenerateAsync(10, userIds, typeIds);
 
         Console.WriteLine("Generating kolcsonzesek...");
-        await new KolcsonzesGenerator(httpClient).GenerateAsync(12, userIds, peldanyIds);
+        await new KolcsonzesGenerator(httpClient).GenerateAsync(12, userIds, peldanyResult.LoanableIds);
 
         Console.WriteLine("Data generation completed successfully.");
     }
