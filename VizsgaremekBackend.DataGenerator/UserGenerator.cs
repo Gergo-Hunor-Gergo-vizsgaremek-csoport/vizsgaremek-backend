@@ -7,30 +7,27 @@ public class UserGenerator(HttpClient httpClient)
 {
     private const string Url = "User";
 
-    private static readonly (string First, string Last)[] People =
+    private static readonly string[] FirstNames =
     [
-        ("Anna", "Kovács"),
-        ("Bence", "Nagy"),
-        ("Csilla", "Tóth"),
-        ("Dávid", "Szabó"),
-        ("Eszter", "Horváth"),
-        ("Ferenc", "Varga"),
-        ("Gábor", "Kiss"),
-        ("Hanna", "Molnár"),
-        ("István", "Németh"),
-        ("Júlia", "Farkas"),
-        ("Katalin", "Balogh"),
-        ("László", "Papp")
+        "Anna", "Bence", "Csilla", "Dávid", "Eszter", "Ferenc",
+        "Gábor", "Hanna", "István", "Júlia", "Katalin", "László"
+    ];
+
+    private static readonly string[] LastNames =
+    [
+        "Kovács", "Nagy", "Tóth", "Szabó", "Horváth", "Varga",
+        "Kiss", "Molnár", "Németh", "Farkas", "Balogh", "Papp"
     ];
 
     public async Task<List<Guid>> GenerateAsync(int n)
     {
         List<Guid> ids = [];
-        int count = Math.Min(n, People.Length);
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < n; i++)
         {
-            var (first, last) = People[i];
+            string first = FirstNames[Random.Shared.Next(FirstNames.Length)];
+            string last = LastNames[Random.Shared.Next(LastNames.Length)];
+
             string baseName = $"{first}.{last}".ToLower()
                 .Replace('á', 'a').Replace('é', 'e').Replace('í', 'i')
                 .Replace('ó', 'o').Replace('ö', 'o').Replace('ő', 'o')
