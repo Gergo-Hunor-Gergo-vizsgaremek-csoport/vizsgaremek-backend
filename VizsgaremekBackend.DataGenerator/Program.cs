@@ -2,13 +2,41 @@
 
 static class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
-        using HttpClient httpClient = new();
-        httpClient.BaseAddress = new Uri("https://localhost:5193");
+        using HttpClientHandler handler = new()
+        {
+            // Allow running against a local dev server with a self-signed certificate.
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
 
-        _ = httpClient.GetAsync("Admin/RecreateDatabase");
-        
-        new LocationGenerator(httpClient).Generate(20);
+        using HttpClient httpClient = new(handler)
+        {
+            BaseAddress = new Uri("https://localhost:5193")
+        };
+
+        Console.WriteLine("Recreating database...");
+        var recreateResponse = await httpClient.GetAsync("Admin/RecreateDatabase");
+        recreateResponse.EnsureSuccessStatusCode();
+
+        Console.WriteLine("Generating locations...");
+        List<Guid> locationIds = await new LocationGenerator(httpClient).GenerateAsync(10);
+
+        Console.WriteLine("Generating users...");
+        List<Guid> userIds = await new UserGenerator(httpClient).GenerateAsync(10);
+
+        Console.WriteLine("Generating types...");
+        List<Guid> typeIds = await new TypeGenerator(httpClient).GenerateAsync(10);
+
+        Console.WriteLine("Generating peldanyok...");
+        List<Guid> peldanyIds = await new PeldanyGenerator(httpClient).GenerateAsync(30, typeIds, userIds, locationIds);
+
+        Console.WriteLine("Generating rendelesek...");
+        List<Guid> rendelesIds = await new RendelesGenerator(httpClient).GenerateAsync(10, userIds, typeIds);
+
+        Console.WriteLine("Generating kolcsonzesek...");
+        await new KolcsonzesGenerator(httpClient).GenerateAsync(12, userIds, peldanyIds);
+
+        Console.WriteLine("Data generation completed successfully.");
     }
 }
