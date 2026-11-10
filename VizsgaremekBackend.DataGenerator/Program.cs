@@ -4,6 +4,13 @@ static class Program
 {
     public static async Task Main(string[] args)
     {
+        if (args.Contains("--help", StringComparer.OrdinalIgnoreCase) ||
+            args.Contains("-h", StringComparer.OrdinalIgnoreCase))
+        {
+            PrintHelp();
+            return;
+        }
+
         bool recreateDb = args.Contains("--recreate", StringComparer.OrdinalIgnoreCase);
         bool generateChildren = !args.Contains("--no-children", StringComparer.OrdinalIgnoreCase);
         int amount = GetIntArg(args, "--amount", 10);
@@ -88,5 +95,29 @@ static class Program
         }
 
         return defaultValue;
+    }
+
+    private static void PrintHelp()
+    {
+        Console.WriteLine("Vizsgaremek Data Generator");
+        Console.WriteLine();
+        Console.WriteLine("Usage:");
+        Console.WriteLine("  dotnet run --project VizsgaremekBackend.DataGenerator/VizsgaremekBackend.DataGenerator.csproj -- [options]");
+        Console.WriteLine();
+        Console.WriteLine("Options:");
+        Console.WriteLine("  -h, --help         Show this help message and exit.");
+        Console.WriteLine("  --recreate         Recreate the database before generating data.");
+        Console.WriteLine("                     Prompts for confirmation before deleting existing data.");
+        Console.WriteLine("  --no-children      Do not generate child peldanyok (all peldanyok will be top-level).");
+        Console.WriteLine("                     By default, child peldany generation is enabled.");
+        Console.WriteLine("  --amount <N>       Base amount of data to generate (default: 10, minimum: 1).");
+        Console.WriteLine("                     Derived counts:");
+        Console.WriteLine("                       locations/users/types/orders: N");
+        Console.WriteLine("                       peldanyok: 3*N");
+        Console.WriteLine("                       kolcsonzesek: max(1, N)");
+        Console.WriteLine();
+        Console.WriteLine("Examples:");
+        Console.WriteLine("  dotnet run --project VizsgaremekBackend.DataGenerator/VizsgaremekBackend.DataGenerator.csproj -- --recreate --amount 20");
+        Console.WriteLine("  dotnet run --project VizsgaremekBackend.DataGenerator/VizsgaremekBackend.DataGenerator.csproj -- --recreate --no-children --amount 5");
     }
 }
