@@ -26,7 +26,7 @@ public class PeldanyGenerator(HttpClient httpClient)
         "A szülő példány részegysége."
     ];
 
-    public async Task<PeldanyGenerationResult> GenerateAsync(int n, List<Guid> typeIds, List<Guid> userIds, List<Guid> locationIds)
+    public async Task<PeldanyGenerationResult> GenerateAsync(int n, List<Guid> typeIds, List<Guid> userIds, List<Guid> locationIds, bool generateChildren = true)
     {
         if (n <= 0) return new PeldanyGenerationResult([], []);
         if (typeIds.Count == 0) throw new InvalidOperationException("At least one type is required to generate peldanyok.");
@@ -35,38 +35,57 @@ public class PeldanyGenerator(HttpClient httpClient)
 
         List<PeldanyReadDto> createdPeldanys = [];
 
-        // Create a base set of top-level (root) peldanys first so children can reference existing parents.
-        int rootCount = Math.Max(1, (int)Math.Ceiling(n * 0.6));
-        rootCount = Math.Min(rootCount, n);
-
-        for (int i = 1; i <= rootCount; i++)
+        // If children are disabled, create only top-level (loanable) peldanys.
+        if (!generateChildren)
         {
-            PeldanyReadDto? created = await CreatePeldanyAsync(
-                serialIndex: i,
-                typeIds: typeIds,
-                userIds: userIds,
-                locationId: locationIds[Random.Shared.Next(locationIds.Count)],
-                parent: null);
+            for (int i = 1; i <= n; i++)
+            {
+                PeldanyReadDto? created = await CreatePeldanyAsync(
+                    serialIndex: i,
+                    typeIds: typeIds,
+                    userIds: userIds,
+                    locationId: locationIds[Random.Shared.Next(locationIds.Count)],
+                    parent: null);
 
-            if (created is not null)
-                createdPeldanys.Add(created);
+                if (created is not null)
+                    createdPeldanys.Add(created);
+            }
         }
-
-        // Create remaining peldanys as children of existing peldanys (roots or other children).
-        // A child must have the same location as its parent and must not receive an active kolcsonzes.
-        for (int i = rootCount + 1; i <= n; i++)
+        else
         {
-            PeldanyReadDto parent = createdPeldanys[Random.Shared.Next(createdPeldanys.Count)];
+            // Create a base set of top-level (root) peldanys first so children can reference existing parents.
+            int rootCount = Math.Max(1, (int)Math.Ceiling(n * 0.6));
+            rootCount = Math.Min(rootCount, n);
 
-            PeldanyReadDto? created = await CreatePeldanyAsync(
-                serialIndex: i,
-                typeIds: typeIds,
-                userIds: userIds,
-                locationId: parent.LocationId,
-                parent: parent);
+            for (int i = 1; i <= rootCount; i++)
+            {
+                PeldanyReadDto? created = await CreatePeldanyAsync(
+                    serialIndex: i,
+                    typeIds: typeIds,
+                    userIds: userIds,
+                    locationId: locationIds[Random.Shared.Next(locationIds.Count)],
+                    parent: null);
 
-            if (created is not null)
-                createdPeldanys.Add(created);
+                if (created is not null)
+                    createdPeldanys.Add(created);
+            }
+
+            // Create remaining peldanys as children of existing peldanys (roots or other children).
+            // A child must have the same location as its parent and must not receive an active kolcsonzes.
+            for (int i = rootCount + 1; i <= n; i++)
+            {
+                PeldanyReadDto parent = createdPeldanys[Random.Shared.Next(createdPeldanys.Count)];
+
+                PeldanyReadDto? created = await CreatePeldanyAsync(
+                    serialIndex: i,
+                    typeIds: typeIds,
+                    userIds: userIds,
+                    locationId: parent.LocationId,
+                    parent: parent);
+
+                if (created is not null)
+                    createdPeldanys.Add(created);
+            }
         }
 
         List<Guid> allIds = createdPeldanys.Select(p => p.Id).ToList();
