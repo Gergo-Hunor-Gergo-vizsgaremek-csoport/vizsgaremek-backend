@@ -14,10 +14,18 @@ static class Program
         bool recreateDb = args.Contains("--recreate", StringComparer.OrdinalIgnoreCase);
         bool generateChildren = !args.Contains("--no-children", StringComparer.OrdinalIgnoreCase);
         int amount = GetIntArg(args, "--amount", 10);
+        string baseUrl = GetStringArg(args, "--base-url", "http://localhost:5193");
 
         if (amount < 1)
         {
             Console.WriteLine("Amount must be at least 1.");
+            return;
+        }
+
+        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out Uri? baseUri) ||
+            (baseUri.Scheme != Uri.UriSchemeHttp && baseUri.Scheme != Uri.UriSchemeHttps))
+        {
+            Console.WriteLine("Invalid base URL. Provide an absolute http or https URL (e.g. https://localhost:5193).");
             return;
         }
 
@@ -41,7 +49,7 @@ static class Program
 
         using HttpClient httpClient = new(handler)
         {
-            BaseAddress = new Uri("https://localhost:5193")
+            BaseAddress = baseUri
         };
 
         if (recreateDb)
@@ -97,6 +105,23 @@ static class Program
         return defaultValue;
     }
 
+    private static string GetStringArg(string[] args, string name, string defaultValue)
+    {
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (!string.Equals(args[i], name, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (i + 1 < args.Length && !args[i + 1].StartsWith("--", StringComparison.Ordinal))
+                return args[i + 1];
+
+            Console.WriteLine($"Invalid or missing value for {name}, using default {defaultValue}.");
+            return defaultValue;
+        }
+
+        return defaultValue;
+    }
+
     private static void PrintHelp()
     {
         Console.WriteLine("Vizsgaremek Data Generator");
@@ -105,19 +130,22 @@ static class Program
         Console.WriteLine("  dotnet run --project VizsgaremekBackend.DataGenerator/VizsgaremekBackend.DataGenerator.csproj -- [options]");
         Console.WriteLine();
         Console.WriteLine("Options:");
-        Console.WriteLine("  -h, --help         Show this help message and exit.");
-        Console.WriteLine("  --recreate         Recreate the database before generating data.");
-        Console.WriteLine("                     Prompts for confirmation before deleting existing data.");
-        Console.WriteLine("  --no-children      Do not generate child peldanyok (all peldanyok will be top-level).");
-        Console.WriteLine("                     By default, child peldany generation is enabled.");
-        Console.WriteLine("  --amount <N>       Base amount of data to generate (default: 10, minimum: 1).");
-        Console.WriteLine("                     Derived counts:");
-        Console.WriteLine("                       locations/users/types/orders: N");
-        Console.WriteLine("                       peldanyok: 3*N");
-        Console.WriteLine("                       kolcsonzesek: max(1, N)");
+        Console.WriteLine("  -h, --help             Show this help message and exit.");
+        Console.WriteLine("  --recreate             Recreate the database before generating data.");
+        Console.WriteLine("                         Prompts for confirmation before deleting existing data.");
+        Console.WriteLine("  --no-children          Do not generate child peldanyok (all peldanyok will be top-level).");
+        Console.WriteLine("                         By default, child peldany generation is enabled.");
+        Console.WriteLine("  --amount <N>           Base amount of data to generate (default: 10, minimum: 1).");
+        Console.WriteLine("                         Derived counts:");
+        Console.WriteLine("                           locations/users/types/orders: N");
+        Console.WriteLine("                           peldanyok: 3*N");
+        Console.WriteLine("                           kolcsonzesek: max(1, N)");
+        Console.WriteLine("  --base-url <URL>       Base URL of the backend API (default: https://localhost:5193).");
+        Console.WriteLine("                         Must be an absolute http or https URL.");
         Console.WriteLine();
         Console.WriteLine("Examples:");
         Console.WriteLine("  dotnet run --project VizsgaremekBackend.DataGenerator/VizsgaremekBackend.DataGenerator.csproj -- --recreate --amount 20");
         Console.WriteLine("  dotnet run --project VizsgaremekBackend.DataGenerator/VizsgaremekBackend.DataGenerator.csproj -- --recreate --no-children --amount 5");
+        Console.WriteLine("  dotnet run --project VizsgaremekBackend.DataGenerator/VizsgaremekBackend.DataGenerator.csproj -- --base-url http://localhost:5193 --recreate");
     }
 }
