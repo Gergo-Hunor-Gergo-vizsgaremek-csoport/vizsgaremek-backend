@@ -4,6 +4,7 @@ using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.IntegrationTests.Infrastructure;
+using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
@@ -11,7 +12,7 @@ namespace VizsgaremekBackend.IntegrationTests.Features.DbAccess;
 
 public class KolcsonzesServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
-    private static KolcsonzesService GetService(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<KolcsonzesService>();
+    private static IKolcsonzesService GetService(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<IKolcsonzesService>();
 
     private async Task<(User user, Peldany peldany)> SeedAsync(VizsgaremekContext db)
     {

@@ -4,6 +4,7 @@ using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.IntegrationTests.Infrastructure;
+using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
@@ -11,7 +12,7 @@ namespace VizsgaremekBackend.IntegrationTests.Features.DbAccess;
 
 public class PeldanyServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
-    private static PeldanyService GetService(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<PeldanyService>();
+    private static IPeldanyService GetService(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<IPeldanyService>();
 
     private async Task<(User user, VizsgaremekBackend.Models.Type type, Location location)> SeedDepsAsync(VizsgaremekContext db)
     {

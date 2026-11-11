@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
-using VizsgaremekBackend.Services;
+using VizsgaremekBackend.Interfaces;
 
 namespace VizsgaremekBackend.Controllers;
 [ApiController]
 [Route("[controller]")]
-public class PeldanyController(PeldanyService peldanyService) : ControllerBase
+public class PeldanyController(IPeldanyService peldanyService) : ControllerBase
 {
     /// <summary>
     /// Retrieves an item instance (példány) by its unique identifier.

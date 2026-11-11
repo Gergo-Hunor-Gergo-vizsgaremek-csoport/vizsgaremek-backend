@@ -4,6 +4,7 @@ using VizsgaremekBackend.Data;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.IntegrationTests.Infrastructure;
+using VizsgaremekBackend.Interfaces;
 using VizsgaremekBackend.Models;
 using VizsgaremekBackend.Services;
 
@@ -11,7 +12,7 @@ namespace VizsgaremekBackend.IntegrationTests.Features.DbAccess;
 
 public class RendelesServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
-    private static RendelesService GetService(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<RendelesService>();
+    private static IRendelesService GetService(IServiceScope scope) => scope.ServiceProvider.GetRequiredService<IRendelesService>();
 
     private async Task<(User user, VizsgaremekBackend.Models.Type type, Peldany peldany)> SeedAsync(VizsgaremekContext db)
     {

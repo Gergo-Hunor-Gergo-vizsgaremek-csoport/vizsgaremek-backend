@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
-using VizsgaremekBackend.Services;
+using VizsgaremekBackend.Interfaces;
 
 namespace VizsgaremekBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class KolcsonzesController(KolcsonzesService kolcsonzesService) : ControllerBase
+public class KolcsonzesController(IKolcsonzesService kolcsonzesService) : ControllerBase
 {
     /// <summary>
     /// Retrieves a loan (kölcsönzés) by its unique identifier.

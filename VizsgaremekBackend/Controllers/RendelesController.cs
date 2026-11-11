@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
-using VizsgaremekBackend.Services;
+using VizsgaremekBackend.Interfaces;
 
 namespace VizsgaremekBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RendelesController(RendelesService rendelesService) : ControllerBase
+public class RendelesController(IRendelesService rendelesService) : ControllerBase
 {
     /// <summary>
     /// Retrieves an order (rendelés) by its unique identifier.
