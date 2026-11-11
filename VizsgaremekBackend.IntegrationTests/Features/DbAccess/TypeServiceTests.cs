@@ -158,8 +158,16 @@ public class TypeServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         await db.SaveChangesAsync();
 
         var available = new Peldany { Id = Guid.NewGuid(), TypeId = type.Id, FelelosId = user.Id, LocationId = location.Id, AddDate = DateTime.UtcNow, SerialNumber = $"S1-{Guid.NewGuid():N}", IsHibas = false, IsSelejt = false, IsSelejtSugg = false };
-        var taken = new Peldany { Id = Guid.NewGuid(), TypeId = type.Id, FelelosId = user.Id, LocationId = location.Id, AddDate = DateTime.UtcNow, SerialNumber = $"S2-{Guid.NewGuid():N}", IsHibas = false, IsSelejt = false, IsSelejtSugg = false, ActiveKolcsonzesId = Guid.NewGuid() };
+        var taken = new Peldany { Id = Guid.NewGuid(), TypeId = type.Id, FelelosId = user.Id, LocationId = location.Id, AddDate = DateTime.UtcNow, SerialNumber = $"S2-{Guid.NewGuid():N}", IsHibas = false, IsSelejt = false, IsSelejtSugg = false };
         db.Peldanys.AddRange(available, taken);
+        await db.SaveChangesAsync();
+
+        // circular FK (kolcsonzes -> peldany, peldany -> kolcsonzes): insert the loan first, then link it
+        var activeKolcsonzes = new Kolcsonzes { Id = Guid.NewGuid(), UserId = user.Id, PeldanyId = taken.Id, Date = DateTime.UtcNow };
+        db.Kolcsonzess.Add(activeKolcsonzes);
+        await db.SaveChangesAsync();
+
+        taken.ActiveKolcsonzesId = activeKolcsonzes.Id;
         await db.SaveChangesAsync();
 
         var result = await service.GetPeldanys(type.Id, 10, 0);
