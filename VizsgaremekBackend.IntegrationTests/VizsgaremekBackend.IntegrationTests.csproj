@@ -25,4 +25,8 @@
       <ProjectReference Include="..\VizsgaremekBackend\VizsgaremekBackend.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\Api\" />
+    </ItemGroup>
+
 </Project>
