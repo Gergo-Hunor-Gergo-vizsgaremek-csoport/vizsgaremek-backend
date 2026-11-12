@@ -9,6 +9,19 @@ namespace VizsgaremekBackend.Services;
 public class UserRoleService(UserManager<User> userManager) : IUserRoleService
 {
     /// <inheritdoc />
+    public async Task<(bool sysAdmin, bool userAdmin, bool deviceAdmin)> GetUserRolesAsync(Guid userId)
+    {
+        User user = await userManager.FindByIdAsync(userId.ToString()) 
+                    ?? throw new NotFoundException(nameof(User), userId);
+        
+        bool sysAdmin = await userManager.IsInRoleAsync(user, "SysAdmin");
+        bool userAdmin = await userManager.IsInRoleAsync(user, "UserAdmin");
+        bool deviceAdmin = await userManager.IsInRoleAsync(user, "DeviceAdmin");
+        
+        return (sysAdmin, userAdmin, deviceAdmin);
+    }
+
+    /// <inheritdoc />
     public async Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal)
     {
         User user = (await userManager.GetUserAsync(claimsPrincipal))
