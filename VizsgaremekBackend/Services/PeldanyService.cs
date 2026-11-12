@@ -19,6 +19,13 @@ public class PeldanyService(VizsgaremekContext vizsgaremekContext, IMapper mappe
 
         return mapper.Map<PeldanyReadDto>(result);
     }
+    
+    public async Task<PeldanyReadDto[]> GetByTypeIdAsync(Guid typeId)
+    {
+        Peldany[] result = await vizsgaremekContext.Peldanys.Where(x => x.TypeId == typeId).ToArrayAsync();
+        
+        return mapper.Map<PeldanyReadDto[]>(result);
+    }
 
     /// <inheritdoc />
     public async Task<PeldanyReadDto> PostAsync(PeldanyWriteDto dto)

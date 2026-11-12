@@ -19,6 +19,12 @@ public class PeldanyController(IPeldanyService peldanyService) : ControllerBase
     {
         return Ok(await peldanyService.GetAsync(id));
     }
+    
+    [HttpGet("by-typeId/{id:guid}")]
+    public async Task<ActionResult<PeldanyReadDto[]>> GetByTypeIdAsync(Guid id)
+    {
+        return Ok(await peldanyService.GetByTypeIdAsync(id));
+    }
 
     /// <summary>
     /// Creates a new item instance (példány).
