@@ -18,7 +18,7 @@ public class TypeController(TypeService typeService) : ControllerBase
     /// <returns>An HTTP 200 OK response containing a paged result of <see cref="TypeReadDto"/> items.</returns>
     /// <exception cref="BadRequestException">Thrown when <paramref name="limit"/> is greater than 100, or when <paramref name="limit"/> or <paramref name="offset"/> is negative.</exception>
     [HttpGet]
-    public async Task<ActionResult<PagedDto<TypeReadDto>>> SearchAsync(string? q, int? limit, int? offset)
+    public async Task<ActionResult<TypeReadDto[]>> SearchAsync(string? q, int? limit, int? offset)
     {
         const int maxResults = 100;
         const int defaultLimit = 50;
@@ -31,7 +31,16 @@ public class TypeController(TypeService typeService) : ControllerBase
         offset ??= 0;
         q ??= string.Empty;
 
-        PagedDto<TypeReadDto> result = await typeService.SearchAsync(q, limit.Value, offset.Value);
+        TypeReadDto[] result = await typeService.SearchAsync(q, limit.Value, offset.Value);
+        return Ok(result);
+    }
+
+    [HttpGet("count")]
+    public async Task<ActionResult<int>> SearchCountAsync(string? q)
+    {
+        q ??= string.Empty;
+
+        int result = (await typeService.SearchCountAsync(q));
         return Ok(result);
     }
 
