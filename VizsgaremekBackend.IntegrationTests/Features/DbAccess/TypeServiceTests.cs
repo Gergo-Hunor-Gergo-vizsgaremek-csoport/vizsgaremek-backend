@@ -63,10 +63,9 @@ public class TypeServiceTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
 
         var result = await service.SearchAsync("AlphaTypeX", 10, 0);
 
-        result.items.Should().Contain(x => x.Id == match.Id);
-        result.items.Should().NotContain(x => x.Id == other.Id);
-        result.items.Should().OnlyContain(x => x.Name.Contains("AlphaTypeX", StringComparison.OrdinalIgnoreCase));
-        result.pageCount.Should().BeGreaterThanOrEqualTo(1);
+        result.Should().Contain(x => x.Id == match.Id);
+        result.Should().NotContain(x => x.Id == other.Id);
+        result.Should().OnlyContain(x => x.Name.Contains("AlphaTypeX", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

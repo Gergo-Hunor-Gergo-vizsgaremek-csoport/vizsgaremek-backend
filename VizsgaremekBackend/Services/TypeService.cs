@@ -15,31 +15,33 @@ public class TypeService(VizsgaremekContext vizsgaremekContext, IMapper mapper)
     /// <param name="query">The search text matched against type names (case-insensitive).</param>
     /// <param name="limit">The maximum number of items to return in the page.</param>
     /// <param name="offset">The number of items to skip.</param>
-    /// <returns>A <see cref="PagedDto{T}"/> containing the matching <see cref="TypeReadDto"/> items and the total page count.</returns>
+    /// <returns>An array containing the matching <see cref="TypeReadDto"/> items.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="query"/> is <c>null</c>.</exception>
     /// <exception cref="BadRequestException">Thrown when <paramref name="limit"/> or <paramref name="offset"/> is negative.</exception>
-    public async Task<PagedDto<TypeReadDto>> SearchAsync(string query, int limit, int offset)
+    public async Task<TypeReadDto[]> SearchAsync(string query, int limit, int offset)
     {
         ArgumentNullException.ThrowIfNull(query);
         if (limit < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
         if (offset < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
 
-        int queryCount = await vizsgaremekContext.Types
-            .Where(x => x.Name.ToLower().Contains(query.ToLower()))
-            .CountAsync();
-
-        int pageCount = Convert.ToInt32(Math.Ceiling(queryCount/(double)limit));
-
-        TypeReadDto[] items = (await vizsgaremekContext.Types
+        return(await vizsgaremekContext.Types
                 .Where(x => x.Name.ToLower().Contains(query.ToLower()))
                 .Skip(offset)
                 .Take(limit)
                 .ToArrayAsync())
             .Select(mapper.Map<TypeReadDto>)
             .ToArray();
-
-        return new PagedDto<TypeReadDto>(items,pageCount);
     }
+    
+    public async Task<int> SearchCountAsync(string query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+
+        return await vizsgaremekContext.Types
+            .Where(x => x.Name.ToLower().Contains(query.ToLower()))
+            .CountAsync();
+    }
+    
 
     /// <summary>
     /// Retrieves a type by its unique identifier.
