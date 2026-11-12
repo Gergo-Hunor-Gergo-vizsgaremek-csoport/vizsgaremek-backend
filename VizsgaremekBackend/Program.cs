@@ -65,6 +65,8 @@ public class Program
             .WithScopedLifetime()
         );
 
+        builder.Services
+            .AddHealthChecks();
         
         builder.Services.AddControllers()
             .AddControllersAsServices();
@@ -148,6 +150,8 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.MapHealthChecks("/health").AllowAnonymous();
 
         app.MapGroup("/auth")
             .MapIdentityApi<User>();
