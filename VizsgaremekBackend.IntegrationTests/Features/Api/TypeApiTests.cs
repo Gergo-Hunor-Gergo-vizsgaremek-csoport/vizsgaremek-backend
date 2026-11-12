@@ -33,11 +33,11 @@ public class TypeApiTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixtu
         var b = await (await client.PostAsJsonAsync("/Type", new TypeWriteDto { Name = "BetaApiType", Description = "D", Icon = "I" })).Content.ReadFromJsonAsync<TypeReadDto>();
 
         var resp = await client.GetAsync("/Type?q=AlphaApiType");
-        var paged = await resp.Content.ReadFromJsonAsync<PagedDto<TypeReadDto>>();
+        var array = await resp.Content.ReadFromJsonAsync<TypeReadDto[]>();
 
         resp.StatusCode.Should().Be(HttpStatusCode.OK);
-        paged!.items.Should().Contain(x => x.Id == a!.Id);
-        paged.items.Should().NotContain(x => x.Id == b!.Id);
+        array!.Should().Contain(x => x.Id == a!.Id);
+        array.Should().NotContain(x => x.Id == b!.Id);
     }
 
     [Fact]

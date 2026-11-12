@@ -25,4 +25,8 @@
       <None Include="Properties\launchSettings.json" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Dtos\PagedDto.cs" />
+    </ItemGroup>
+
 </Project>
