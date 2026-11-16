@@ -14,6 +14,9 @@ public class Program
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        
+        builder.Services.Configure<SeaweedFsOptions>(builder.Configuration.GetSection("S3"));
+        
 
         builder.Services.AddDbContext<VizsgaremekContext>(options =>
         {
