@@ -1,3 +1,5 @@
+using Amazon.Runtime;
+using Amazon.S3;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
@@ -13,7 +15,25 @@ public class Program
     
     public static async Task Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+        
+        builder.Services.Configure<SeaweedFsOptions>(builder.Configuration.GetSection("S3"));
+
+        builder.Services.AddSingleton<IAmazonS3>(sp =>
+        {
+            var opt = builder.Configuration.GetSection("S3").Get<SeaweedFsOptions>();
+
+            AmazonS3Config config = new()
+            {
+                ServiceURL = opt!.ServiceUrl,
+                ForcePathStyle = true,
+                AuthenticationRegion = "us-east-1",
+            };
+            
+            BasicAWSCredentials credentials = new(opt.AccessKey, opt.SecretKey);
+            
+            return new AmazonS3Client(credentials, config);
+        });
 
         builder.Services.AddDbContext<VizsgaremekContext>(options =>
         {
