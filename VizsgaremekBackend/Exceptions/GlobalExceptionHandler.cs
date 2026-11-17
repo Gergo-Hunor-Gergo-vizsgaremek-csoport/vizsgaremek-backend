@@ -41,6 +41,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
     {
         return exception switch
         {
+            NotImplementedException => (StatusCodes.Status501NotImplemented, "Not Implemented", "The method or operation is not implemented."),
             NotLoggedInException => (StatusCodes.Status401Unauthorized, "Unauthorized", exception.Message),
             ForbiddenException => (StatusCodes.Status403Forbidden, "Forbidden", exception.Message),
             NotFoundException => (StatusCodes.Status404NotFound, "Not Found", exception.Message),
