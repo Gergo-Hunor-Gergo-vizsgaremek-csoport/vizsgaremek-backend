@@ -9,6 +9,10 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "VizsgaremekConnectionString":"Host=localhost;Port=5432;Username=postgres;Database=Vizsgaremek;Password=123456"
+        "S3__ServiceUrl": "http://localhost:8333",
+        "S3__AccessKey": "devaccesskey",
+        "S3__SecretKey": "devsecretkey123",
+        "S3__Bucket": "vizsgaremek"
       }
     },
     "https": {
@@ -19,6 +23,10 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "VizsgaremekConnectionString":"Host=localhost;Port=5432;Username=postgres;Database=Vizsgaremek;Password=123456"
+        "S3__ServiceUrl": "http://localhost:8333",
+        "S3__AccessKey": "devaccesskey",
+        "S3__SecretKey": "devsecretkey123",
+        "S3__Bucket": "vizsgaremek"
       }
     }
   }
