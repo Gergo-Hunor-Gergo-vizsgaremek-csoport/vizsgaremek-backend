@@ -21,9 +21,9 @@ public class PeldanyController(IPeldanyService peldanyService) : ControllerBase
     }
     
     [HttpGet("by-typeId/{id:guid}")]
-    public async Task<ActionResult<PeldanyReadDto[]>> GetByTypeIdAsync(Guid id)
+    public async Task<ActionResult<PeldanyReadDto[]>> GetByTypeIdAsync(Guid id, int limit, int offset)
     {
-        return Ok(await peldanyService.GetByTypeIdAsync(id));
+        return Ok(await peldanyService.GetByTypeIdAsync(id, limit, offset));
     }
 
     /// <summary>

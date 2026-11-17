@@ -13,7 +13,7 @@ public interface IPeldanyService
     /// <exception cref="NotFoundException">Thrown when no instance exists with the specified <paramref name="id"/>.</exception>
     public Task<PeldanyReadDto> GetAsync(Guid id);
 
-    public Task<PeldanyReadDto[]> GetByTypeIdAsync(Guid typeId);
+    public Task<PeldanyReadDto[]> GetByTypeIdAsync(Guid typeId, int limit, int offset);
 
     /// <summary>
     /// Creates a new item instance (példány).
