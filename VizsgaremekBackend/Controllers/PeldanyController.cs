@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using VizsgaremekBackend.Dtos;
 using VizsgaremekBackend.Interfaces;
+using VizsgaremekBackend.Exceptions;
 
 namespace VizsgaremekBackend.Controllers;
 [ApiController]
@@ -21,9 +22,25 @@ public class PeldanyController(IPeldanyService peldanyService) : ControllerBase
     }
     
     [HttpGet("by-typeId/{id:guid}")]
-    public async Task<ActionResult<PeldanyReadDto[]>> GetByTypeIdAsync(Guid id, int limit, int offset)
+    public async Task<ActionResult<PeldanyReadDto[]>> GetByTypeIdAsync(Guid id, int? limit, int? offset)
     {
-        return Ok(await peldanyService.GetByTypeIdAsync(id, limit, offset));
+        const int maxResults = 100;
+        const int defaultLimit = 50;
+
+        if (limit is > maxResults) throw new BadRequestException($"Limit may not be more than {maxResults}.");
+        if (limit is < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
+        if (offset is < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
+
+        limit ??= defaultLimit;
+        offset ??= 0;
+        return Ok(await peldanyService.GetByTypeIdAsync(id, limit.Value, offset.Value));
+    }
+    
+    [HttpGet("count")]
+    public async Task<ActionResult<int>> PeldanyCounterAsync([FromQuery]Guid q)
+    {
+        int result = (await peldanyService.PeldanyCounterAsync(q));
+        return Ok(result);
     }
 
     /// <summary>

@@ -14,6 +14,8 @@ public interface IPeldanyService
     public Task<PeldanyReadDto> GetAsync(Guid id);
 
     public Task<PeldanyReadDto[]> GetByTypeIdAsync(Guid typeId, int limit, int offset);
+    
+    public Task<int> PeldanyCounterAsync(Guid id);
 
     /// <summary>
     /// Creates a new item instance (példány).
