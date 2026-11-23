@@ -95,6 +95,16 @@ public class UserController(IUserService userService, IUserRoleService userRoleS
         List<UserReadDto> result = await userService.SearchAsync(q, limit.Value, offset.Value);
         return Ok(result);
     }
+    
+    
+    [HttpGet("count")]
+    public async Task<ActionResult<int>> SearchCountAsync(string? q)
+    {
+        q ??= string.Empty;
+
+        int result = (await userService.SearchCountAsync(q));
+        return Ok(result);
+    }
 
     /// <summary>
     /// Retrieves a user by its unique identifier.

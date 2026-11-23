@@ -16,6 +16,8 @@ public interface IUserService
     /// <exception cref="BadRequestException">Thrown when <paramref name="limit"/> or <paramref name="offset"/> is negative.</exception>
     public Task<List<UserReadDto>> SearchAsync(string query, int limit, int offset);
 
+    public Task<int> SearchCountAsync(string query);
+
     /// <summary>
     /// Retrieves a user by its unique identifier.
     /// </summary>
