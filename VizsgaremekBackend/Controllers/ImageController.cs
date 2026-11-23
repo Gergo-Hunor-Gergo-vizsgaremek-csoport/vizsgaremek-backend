@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Interfaces;
 
 namespace VizsgaremekBackend.Controllers;
@@ -20,16 +21,32 @@ public class ImageController(IFileService fileService) : ControllerBase
         return File(result, contentType);
     }
 
+    private static class UploadLimits
+    {
+        public const long MaxImageBytes = 5 * 1024 * 1024;           // 5,242,880 (5 MiB)
+        public const long MaxRequestBytes = MaxImageBytes + 64 * 1024; // + headroom for multipart overhead
+    }
+
     [Authorize(Roles = "SysAdmin,DeviceAdmin")]
     [HttpPost]
+    [RequestSizeLimit(UploadLimits.MaxRequestBytes)]
+    [RequestFormLimits(MultipartBodyLengthLimit = UploadLimits.MaxImageBytes)]
     public async Task<IActionResult> PostAsync(IFormFile file, CancellationToken cancellationToken)
     {
-        await fileService.PostAsync(ImagePrefix + Guid.NewGuid(),
+        Guid id = Guid.NewGuid();
+
+        if (file.ContentType is not ("image/jpeg" or "image/png" or "image/webp")) 
+            return Problem(
+                title: "Unsupported image type.",
+                detail: "Allowed types: image/jpeg, image/png, image/webp.",
+                statusCode: StatusCodes.Status415UnsupportedMediaType);
+        
+        await fileService.PostAsync(ImagePrefix + id,
             file.OpenReadStream(),
             file.ContentType,
             cancellationToken);
 
-        return Created();
+        return Created(id.ToString(), null);
     }
 
     [Authorize(Roles = "SysAdmin,DeviceAdmin")]
