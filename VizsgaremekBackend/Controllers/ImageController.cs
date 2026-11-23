@@ -1,29 +1,35 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VizsgaremekBackend.Interfaces;
 
 namespace VizsgaremekBackend.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ImageController : ControllerBase
+public class ImageController(IFileService fileService) : ControllerBase
 {
+    private const string ImagePrefix = "types";
+    
+    [Authorize]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetAsync(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        (Stream result, string contentType) =
+            await fileService.GetAsync(ImagePrefix + id, cancellationToken);
+
+        return File(result, contentType);
     }
 
-    /*
-    [HttpGet("{id:guid}/metadata")]
-    public async Task<IActionResult> GetMetadataAsync(Guid id, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-    */
-
+    [Authorize(Roles = "SysAdmin,DeviceAdmin")]
     [HttpPost]
     public async Task<IActionResult> PostAsync(IFormFile file, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await fileService.PostAsync(ImagePrefix + Guid.NewGuid(),
+            file.OpenReadStream(),
+            file.ContentType,
+            cancellationToken);
+
+        return Created();
     }
 
     [HttpDelete]
