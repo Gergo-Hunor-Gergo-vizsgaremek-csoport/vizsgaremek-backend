@@ -32,9 +32,11 @@ public class ImageController(IFileService fileService) : ControllerBase
         return Created();
     }
 
+    [Authorize(Roles = "SysAdmin,DeviceAdmin")]
     [HttpDelete]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await fileService.DeleteAsync(ImagePrefix + id, cancellationToken);
+        return NoContent();
     }
 }
