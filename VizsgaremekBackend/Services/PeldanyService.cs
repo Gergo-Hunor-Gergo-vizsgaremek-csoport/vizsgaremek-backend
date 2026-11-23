@@ -20,12 +20,27 @@ public class PeldanyService(VizsgaremekContext vizsgaremekContext, IMapper mappe
         return mapper.Map<PeldanyReadDto>(result);
     }
     
-    public async Task<PeldanyReadDto[]> GetByTypeIdAsync(Guid typeId)
+    public async Task<PeldanyReadDto[]> GetByTypeIdAsync(Guid typeId, int limit, int offset)
     {
-        Peldany[] result = await vizsgaremekContext.Peldanys.Where(x => x.TypeId == typeId).ToArrayAsync();
+        ArgumentNullException.ThrowIfNull(typeId);
+        if (limit < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
+        if (offset < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
+        
+        Peldany[] result = await vizsgaremekContext.Peldanys.Where(x => x.TypeId == typeId).OrderBy(x => x.TypeId)
+            .Skip(offset).Take(limit).ToArrayAsync();
         
         return mapper.Map<PeldanyReadDto[]>(result);
     }
+    
+    public async Task<int> PeldanyCounterAsync(Guid id)
+    {
+        ArgumentNullException.ThrowIfNull(id);
+
+        return await vizsgaremekContext.Peldanys
+            .Where(x => x.TypeId == id)
+            .CountAsync();
+    }
+
 
     /// <inheritdoc />
     public async Task<PeldanyReadDto> PostAsync(PeldanyWriteDto dto)
