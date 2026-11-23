@@ -32,6 +32,16 @@ public class UserService(
             .Select(mapper.Map<UserReadDto>)
             .ToList();
     }
+    
+    public async Task<int> SearchCountAsync(string query)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        var normalizedQuery = query.ToLower();
+        
+        return await vizsgaremekContext.Users
+            .Where(x => x.UserName != null && x.UserName.ToLower().Contains(normalizedQuery))
+            .CountAsync();
+    }
 
     /// <inheritdoc />
     public async Task<UserReadDto> GetAsync(Guid id)
