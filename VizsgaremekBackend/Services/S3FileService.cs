@@ -27,7 +27,7 @@ public class S3FileService(IAmazonS3 s3, IConfiguration config) : IFileService
             Key = key,
             InputStream = value,
             ContentType = contentType,
-            DisablePayloadSigning = true,
+            //DisablePayloadSigning = true,
         }, ct);
     }
 
