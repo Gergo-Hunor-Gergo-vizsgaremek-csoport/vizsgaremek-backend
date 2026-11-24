@@ -58,6 +58,8 @@ public class ImageController(IFileService fileService) : ControllerBase
 
         if (file.ContentType != realType) throw new BadRequestException("Image doesent match provided image type.");
         
+        stream.Position = 0;
+        
         await fileService.PostAsync(ImagePrefix + id,
             stream,
             file.ContentType,
