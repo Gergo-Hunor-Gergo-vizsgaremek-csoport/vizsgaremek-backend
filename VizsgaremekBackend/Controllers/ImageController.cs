@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SixLabors.ImageSharp;
+using SkiaSharp;
 using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Interfaces;
 
@@ -44,17 +44,16 @@ public class ImageController(IFileService fileService) : ControllerBase
 
         await using Stream stream = file.OpenReadStream();
 
-        string? realType;
+        using SKManagedStream skStream = new(stream, false); // don't dispose caller's stream
+        using SKCodec? codec = SKCodec.Create(skStream);              // null if not a recognized image
 
-        try
+        string? realType = codec?.EncodedFormat switch
         {
-            ImageInfo info = await Image.IdentifyAsync(stream, cancellationToken);
-            realType = info.Metadata.DecodedImageFormat?.DefaultMimeType;
-        }
-        catch (Exception e) when(e is UnknownImageFormatException or InvalidImageContentException)
-        {
-            realType = null;
-        }
+            SKEncodedImageFormat.Jpeg => "image/jpeg",
+            SKEncodedImageFormat.Png => "image/png",
+            SKEncodedImageFormat.Webp => "image/webp",
+            _ => null,
+        };
 
         if (file.ContentType != realType) throw new BadRequestException("Image doesent match provided image type.");
         
