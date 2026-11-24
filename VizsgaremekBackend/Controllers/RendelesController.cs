@@ -72,9 +72,9 @@ public class RendelesController(IRendelesService rendelesService) : ControllerBa
     /// <exception cref="VizsgaremekBackend.Exceptions.NotFoundException">Thrown when the order or a referenced instance does not exist.</exception>
     /// <exception cref="VizsgaremekBackend.Exceptions.ConflictException">Thrown when a referenced instance already has an active loan.</exception>
     [HttpPost("{id:guid}/assign")]
-    public async Task<ActionResult<KolcsonzesReadDto[]>> AssignPeldanyAsync(Guid id, [FromBody] KolcsonzesWriteDto[] kolcsonzesWriteDtos)
+    public async Task<ActionResult<KolcsonzesReadDto>> AssignPeldanyAsync(Guid id, [FromBody] KolcsonzesWriteDto kolcsonzesWriteDto)
     {
-        var createdKolcsonzesek = await rendelesService.AssignPeldanysAsync(id, kolcsonzesWriteDtos);
-        return Created($"/Kolcsonzes/{createdKolcsonzesek[0].Id}", createdKolcsonzesek);
+        var createdKolcsonzesek = await rendelesService.AssignPeldanyAsync(id, kolcsonzesWriteDto);
+        return Created($"/Kolcsonzes/{createdKolcsonzesek.Id}", createdKolcsonzesek);
     }
 }

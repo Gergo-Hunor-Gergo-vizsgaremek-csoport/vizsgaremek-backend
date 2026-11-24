@@ -148,10 +148,10 @@ public class RendelesControllerTests
     {
         //Arrange
         var rendelesId = Guid.NewGuid();
-        var write = new[] { new KolcsonzesWriteDto { UserId = Guid.NewGuid(), PeldanyId = Guid.NewGuid(), Date = DateTime.UtcNow } };
-        var read = new[] { new KolcsonzesReadDto { Id = Guid.NewGuid(), UserId = write[0].UserId, PeldanyId = write[0].PeldanyId, Date = write[0].Date } };
+        var write = new KolcsonzesWriteDto { UserId = Guid.NewGuid(), PeldanyId = Guid.NewGuid(), Date = DateTime.UtcNow };
+        var read = new KolcsonzesReadDto { Id = Guid.NewGuid(), UserId = write.UserId, PeldanyId = write.PeldanyId, Date = write.Date};
         var serviceMock = new Mock<IRendelesService>();
-        serviceMock.Setup(x => x.AssignPeldanysAsync(rendelesId, write)).ReturnsAsync(read);
+        serviceMock.Setup(x => x.AssignPeldanyAsync(rendelesId, write)).ReturnsAsync(read);
 
         var controller = CreateController(serviceMock);
 
@@ -161,7 +161,7 @@ public class RendelesControllerTests
         //Assert
         result.Result.Should().BeOfType<CreatedResult>();
         ((CreatedResult)result.Result!).Value.Should().BeEquivalentTo(read);
-        serviceMock.Verify(x => x.AssignPeldanysAsync(rendelesId, write), Times.Once);
+        serviceMock.Verify(x => x.AssignPeldanyAsync(rendelesId, write), Times.Once);
     }
 
     [Fact]
@@ -169,9 +169,9 @@ public class RendelesControllerTests
     {
         //Arrange
         var rendelesId = Guid.NewGuid();
-        var write = new[] { new KolcsonzesWriteDto { UserId = Guid.NewGuid(), PeldanyId = Guid.NewGuid(), Date = DateTime.UtcNow } };
+        var write = new KolcsonzesWriteDto { UserId = Guid.NewGuid(), PeldanyId = Guid.NewGuid(), Date = DateTime.UtcNow };
         var serviceMock = new Mock<IRendelesService>();
-        serviceMock.Setup(x => x.AssignPeldanysAsync(rendelesId, write)).ThrowsAsync(new ConflictException("already assigned"));
+        serviceMock.Setup(x => x.AssignPeldanyAsync(rendelesId, write)).ThrowsAsync(new ConflictException("already assigned"));
 
         var controller = CreateController(serviceMock);
 
