@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp;
 using VizsgaremekBackend.Exceptions;
 using VizsgaremekBackend.Interfaces;
 
@@ -40,9 +41,25 @@ public class ImageController(IFileService fileService) : ControllerBase
                 title: "Unsupported image type.",
                 detail: "Allowed types: image/jpeg, image/png, image/webp.",
                 statusCode: StatusCodes.Status415UnsupportedMediaType);
+
+        await using Stream stream = file.OpenReadStream();
+
+        string? realType;
+
+        try
+        {
+            ImageInfo info = await Image.IdentifyAsync(stream, cancellationToken);
+            realType = info.Metadata.DecodedImageFormat?.DefaultMimeType;
+        }
+        catch (Exception e) when(e is UnknownImageFormatException or InvalidImageContentException)
+        {
+            realType = null;
+        }
+
+        if (file.ContentType != realType) throw new BadRequestException("Image doesent match provided image type.");
         
         await fileService.PostAsync(ImagePrefix + id,
-            file.OpenReadStream(),
+            stream,
             file.ContentType,
             cancellationToken);
 
