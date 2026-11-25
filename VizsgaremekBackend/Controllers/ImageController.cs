@@ -10,7 +10,7 @@ namespace VizsgaremekBackend.Controllers;
 [Route("[controller]")]
 public class ImageController(IFileService fileService) : ControllerBase
 {
-    private const string ImagePrefix = "types";
+    private const string ImagePrefix = "types/";
     
     [Authorize]
     [HttpGet("{id:guid}")]
