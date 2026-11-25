@@ -84,4 +84,20 @@ public class PeldanyController(IPeldanyService peldanyService) : ControllerBase
         await peldanyService.DeleteAsync(id);
         return NoContent();
     }
+    
+    [HttpGet("{id:guid}/children")]
+    public async Task<ActionResult<PeldanyReadDto[]>> GetChildrenAsync(Guid id, int? limit, int? offset)
+    {
+        const int maxResults = 100;
+        const int defaultLimit = 50;
+
+        if (limit is > maxResults) throw new BadRequestException($"Limit may not be more than {maxResults}.");
+        if (limit is < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
+        if (offset is < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
+
+        limit ??= defaultLimit;
+        offset ??= 0;
+
+        return Ok(await peldanyService.GetChildrenAsync(id, limit.Value, offset.Value));
+    }
 }

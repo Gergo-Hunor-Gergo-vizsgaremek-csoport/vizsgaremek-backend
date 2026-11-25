@@ -76,4 +76,22 @@ public class PeldanyService(VizsgaremekContext vizsgaremekContext, IMapper mappe
         vizsgaremekContext.Peldanys.Remove(peldany);
         await vizsgaremekContext.SaveChangesAsync();
     }
+
+    public async Task<PeldanyReadDto[]> GetChildrenAsync(Guid id, int limit, int offset)
+    {
+        if (limit < 0) throw new BadRequestException("Limit must be greater than or equal to 0.");
+        if (offset < 0) throw new BadRequestException("Offset must be greater than or equal to 0.");
+
+        Peldany? peldany = await vizsgaremekContext.Peldanys
+            .SingleOrDefaultAsync(x => x.Id == id);
+
+        if (peldany is null) throw new NotFoundException(nameof(Peldany), id);
+
+        return vizsgaremekContext.Peldanys
+            .Where(x => x.ParentId == id)
+            .Skip(offset)
+            .Take(limit)
+            .Select(x => mapper.Map<PeldanyReadDto>(x))
+            .ToArray();
+    }
 }
