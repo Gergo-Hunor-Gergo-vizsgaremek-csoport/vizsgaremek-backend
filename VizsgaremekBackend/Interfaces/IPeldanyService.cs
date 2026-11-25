@@ -42,4 +42,6 @@ public interface IPeldanyService
     /// <returns>A task that represents the asynchronous delete operation.</returns>
     /// <exception cref="NotFoundException">Thrown when no instance exists with the specified <paramref name="id"/>.</exception>
     public Task DeleteAsync(Guid id);
+
+    public Task<PeldanyReadDto[]> GetChildrenAsync(Guid id, int limit, int offset);
 }
