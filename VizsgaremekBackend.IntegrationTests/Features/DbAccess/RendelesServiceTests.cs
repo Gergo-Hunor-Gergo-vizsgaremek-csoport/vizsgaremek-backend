@@ -137,7 +137,7 @@ public class RendelesServiceTests(DatabaseFixture fixture) : IClassFixture<Datab
     }
 
     [Fact]
-    public async Task AssignPeldanyAsync_WithValidData_ShouldCreateKolcsonzesek()
+    public async Task AssignPeldanyAsync_WithValidData_ShouldCreateKolcsonzes()
     {
         using var scope = fixture.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<VizsgaremekContext>();
@@ -145,7 +145,7 @@ public class RendelesServiceTests(DatabaseFixture fixture) : IClassFixture<Datab
         var (user, type, peldany) = await SeedAsync(db);
         var rendeles = await service.PostAsync(NewDto(user.Id, type.Id));
 
-        var result = await service.AssignPeldanyAsync(rendeles.Id, new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = peldany.Id, Date = DateTime.UtcNow  });
+        var result = await service.AssignPeldanyAsync(rendeles.Id, new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = peldany.Id, Date = DateTime.UtcNow});
 
         result.PeldanyId.Should().Be(peldany.Id);
 
@@ -162,15 +162,6 @@ public class RendelesServiceTests(DatabaseFixture fixture) : IClassFixture<Datab
         var service = GetService(scope);
         Func<Task> act = async () => await service.AssignPeldanyAsync(Guid.NewGuid(), null!);
         await act.Should().ThrowAsync<ArgumentNullException>();
-    }
-
-    [Fact]
-    public async Task AssignPeldanyAsync_WithEmptyArray_ShouldThrowBadRequestException()
-    {
-        using var scope = fixture.CreateScope();
-        var service = GetService(scope);
-        Func<Task> act = async () => await service.AssignPeldanyAsync(Guid.NewGuid(), null);
-        await act.Should().ThrowAsync<BadRequestException>();
     }
 
     [Fact]

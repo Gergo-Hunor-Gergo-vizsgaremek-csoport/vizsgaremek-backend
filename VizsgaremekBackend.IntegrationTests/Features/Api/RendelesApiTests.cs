@@ -111,7 +111,7 @@ public class RendelesApiTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
     }
 
     [Fact]
-    public async Task Assign_WhenValid_ShouldCreateKolcsonzesek()
+    public async Task Assign_WhenValid_ShouldCreateKolcsonzes()
     {
         //Arrange
         var (userId, typeId, peldanyId) = await SeedAsync();
@@ -119,7 +119,7 @@ public class RendelesApiTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         var created = await (await client.PostAsJsonAsync("/Rendeles", new RendelesWriteDto { UserId = userId, TypeId = typeId, Date = DateTime.UtcNow, Quantity = 1, CompletedQuantity = 0 })).Content.ReadFromJsonAsync<RendelesReadDto>();
 
         //Act
-        var assignResp = await client.PostAsJsonAsync($"/Rendeles/{created!.Id}/assign", new[] { new KolcsonzesWriteDto { UserId = userId, PeldanyId = peldanyId, Date = DateTime.UtcNow } });
+        var assignResp = await client.PostAsJsonAsync($"/Rendeles/{created!.Id}/assign", new KolcsonzesWriteDto { UserId = userId, PeldanyId = peldanyId, Date = DateTime.UtcNow });
 
         //Assert
         assignResp.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -139,7 +139,7 @@ public class RendelesApiTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         var (userId, _, peldanyId) = await SeedAsync();
         var client = fixture.Factory.CreateClient();
 
-        var resp = await client.PostAsJsonAsync($"/Rendeles/{Guid.NewGuid()}/assign", new[] { new KolcsonzesWriteDto { UserId = userId, PeldanyId = peldanyId, Date = DateTime.UtcNow } });
+        var resp = await client.PostAsJsonAsync($"/Rendeles/{Guid.NewGuid()}/assign", new KolcsonzesWriteDto { UserId = userId, PeldanyId = peldanyId, Date = DateTime.UtcNow });
 
         resp.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -151,7 +151,7 @@ public class RendelesApiTests(DatabaseFixture fixture) : IClassFixture<DatabaseF
         var client = fixture.Factory.CreateClient();
         var created = await (await client.PostAsJsonAsync("/Rendeles", new RendelesWriteDto { UserId = userId, TypeId = typeId, Date = DateTime.UtcNow, Quantity = 1, CompletedQuantity = 0 })).Content.ReadFromJsonAsync<RendelesReadDto>();
 
-        var resp = await client.PostAsJsonAsync($"/Rendeles/{created!.Id}/assign", new[] { new KolcsonzesWriteDto { UserId = userId, PeldanyId = Guid.NewGuid(), Date = DateTime.UtcNow } });
+        var resp = await client.PostAsJsonAsync($"/Rendeles/{created!.Id}/assign", new KolcsonzesWriteDto { UserId = userId, PeldanyId = Guid.NewGuid(), Date = DateTime.UtcNow });
 
         resp.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
