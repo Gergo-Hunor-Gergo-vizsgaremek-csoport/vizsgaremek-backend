@@ -137,7 +137,7 @@ public class RendelesServiceTests(DatabaseFixture fixture) : IClassFixture<Datab
     }
 
     [Fact]
-    public async Task AssignPeldanysAsync_WithValidData_ShouldCreateKolcsonzesek()
+    public async Task AssignPeldanyAsync_WithValidData_ShouldCreateKolcsonzes()
     {
         using var scope = fixture.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<VizsgaremekContext>();
@@ -145,60 +145,50 @@ public class RendelesServiceTests(DatabaseFixture fixture) : IClassFixture<Datab
         var (user, type, peldany) = await SeedAsync(db);
         var rendeles = await service.PostAsync(NewDto(user.Id, type.Id));
 
-        var result = await service.AssignPeldanysAsync(rendeles.Id, new[] { new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = peldany.Id, Date = DateTime.UtcNow } });
+        var result = await service.AssignPeldanyAsync(rendeles.Id, new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = peldany.Id, Date = DateTime.UtcNow});
 
-        result.Should().HaveCount(1);
-        result[0].PeldanyId.Should().Be(peldany.Id);
+        result.PeldanyId.Should().Be(peldany.Id);
 
         // modification is actually persisted
         var p = db.Peldanys.First(x => x.Id == peldany.Id);
-        p.ActiveKolcsonzesId.Should().Be(result[0].Id);
-        db.Kolcsonzess.Any(x => x.Id == result[0].Id).Should().BeTrue();
+        p.ActiveKolcsonzesId.Should().Be(result.Id);
+        db.Kolcsonzess.Any(x => x.Id == result.Id).Should().BeTrue();
     }
 
     [Fact]
-    public async Task AssignPeldanysAsync_WithNullArray_ShouldThrowArgumentNullException()
+    public async Task AssignPeldanyAsync_WithNullValue_ShouldThrowArgumentNullException()
     {
         using var scope = fixture.CreateScope();
         var service = GetService(scope);
-        Func<Task> act = async () => await service.AssignPeldanysAsync(Guid.NewGuid(), null!);
+        Func<Task> act = async () => await service.AssignPeldanyAsync(Guid.NewGuid(), null!);
         await act.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
-    public async Task AssignPeldanysAsync_WithEmptyArray_ShouldThrowBadRequestException()
-    {
-        using var scope = fixture.CreateScope();
-        var service = GetService(scope);
-        Func<Task> act = async () => await service.AssignPeldanysAsync(Guid.NewGuid(), Array.Empty<KolcsonzesWriteDto>());
-        await act.Should().ThrowAsync<BadRequestException>();
-    }
-
-    [Fact]
-    public async Task AssignPeldanysAsync_WhenRendelesMissing_ShouldThrowNotFoundException()
+    public async Task AssignPeldanyAsync_WhenRendelesMissing_ShouldThrowNotFoundException()
     {
         using var scope = fixture.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<VizsgaremekContext>();
         var service = GetService(scope);
         var (user, _, peldany) = await SeedAsync(db);
-        Func<Task> act = async () => await service.AssignPeldanysAsync(Guid.NewGuid(), new[] { new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = peldany.Id, Date = DateTime.UtcNow } });
+        Func<Task> act = async () => await service.AssignPeldanyAsync(Guid.NewGuid(), new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = peldany.Id, Date = DateTime.UtcNow  });
         await act.Should().ThrowAsync<NotFoundException>();
     }
 
     [Fact]
-    public async Task AssignPeldanysAsync_WhenPeldanyMissing_ShouldThrowNotFoundException()
+    public async Task AssignPeldanyAsync_WhenPeldanyMissing_ShouldThrowNotFoundException()
     {
         using var scope = fixture.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<VizsgaremekContext>();
         var service = GetService(scope);
         var (user, type, _) = await SeedAsync(db);
         var rendeles = await service.PostAsync(NewDto(user.Id, type.Id));
-        Func<Task> act = async () => await service.AssignPeldanysAsync(rendeles.Id, new[] { new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = Guid.NewGuid(), Date = DateTime.UtcNow } });
+        Func<Task> act = async () => await service.AssignPeldanyAsync(rendeles.Id, new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = Guid.NewGuid(), Date = DateTime.UtcNow });
         await act.Should().ThrowAsync<NotFoundException>();
     }
 
     [Fact]
-    public async Task AssignPeldanysAsync_WhenPeldanyAlreadyAssigned_ShouldThrowConflictException()
+    public async Task AssignPeldanyAsync_WhenPeldanyAlreadyAssigned_ShouldThrowConflictException()
     {
         using var scope = fixture.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<VizsgaremekContext>();
@@ -206,9 +196,9 @@ public class RendelesServiceTests(DatabaseFixture fixture) : IClassFixture<Datab
         var (user, type, peldany) = await SeedAsync(db);
         var rendeles = await service.PostAsync(NewDto(user.Id, type.Id));
         var dto = new KolcsonzesWriteDto { UserId = user.Id, PeldanyId = peldany.Id, Date = DateTime.UtcNow };
-        await service.AssignPeldanysAsync(rendeles.Id, new[] { dto });
+        await service.AssignPeldanyAsync(rendeles.Id,dto);
 
-        Func<Task> act = async () => await service.AssignPeldanysAsync(rendeles.Id, new[] { dto });
+        Func<Task> act = async () => await service.AssignPeldanyAsync(rendeles.Id,dto);
 
         await act.Should().ThrowAsync<ConflictException>();
     }

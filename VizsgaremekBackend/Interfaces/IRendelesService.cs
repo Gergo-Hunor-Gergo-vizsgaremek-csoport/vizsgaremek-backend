@@ -40,18 +40,17 @@ public interface IRendelesService
     public Task DeleteAsync(Guid id);
 
     /// <summary>
-    /// Assigns item instances (példányok) to an order by creating loans (kölcsönzések) from the provided assignment data.
+    /// Assigns item instance(példány) to an order by creating a loan (kölcsönzés) from the provided assignment data.
     /// </summary>
     /// <param name="rendelesId">The unique identifier of the target order.</param>
-    /// <param name="kolcsonzesWriteDtos">The loan data for each assignment to create. Each entry is mapped to a loan and linked to its referenced instance.</param>
-    /// <returns>An array of <see cref="KolcsonzesReadDto"/> items representing the created loans, in the same order as the input.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="kolcsonzesWriteDtos"/> is <c>null</c>.</exception>
-    /// <exception cref="BadRequestException">Thrown when <paramref name="kolcsonzesWriteDtos"/> is empty or contains a <c>null</c> element.</exception>
-    /// <exception cref="NotFoundException">Thrown when the order or a referenced instance (példány) does not exist.</exception>
-    /// <exception cref="ConflictException">Thrown when a referenced instance already has an active loan.</exception>
+    /// <param name="kolcsonzesWriteDto">The loan data for the assignment to create.</param>
+    /// <returns>An array of <see cref="KolcsonzesReadDto"/> item representing the created loan.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="kolcsonzesWriteDto"/> is <c>null</c>.</exception>
+    /// <exception cref="NotFoundException">Thrown when the order or the referenced instance (példány) does not exist.</exception>
+    /// <exception cref="ConflictException">Thrown when the referenced instance already has an active loan.</exception>
     /// <remarks>
-    /// For each assignment, the method verifies the order exists, resolves the referenced instance, ensures the instance has no active loan,
+    ///This method verifies the order exists, resolves the referenced instance, ensures the instance has no active loan,
     /// sets the instance's active loan reference, and adds the new loan. All changes are persisted in a single <c>SaveChangesAsync</c> call.
     /// </remarks>
-    public Task<KolcsonzesReadDto[]> AssignPeldanysAsync(Guid rendelesId, KolcsonzesWriteDto[] kolcsonzesWriteDtos);
+    public Task<KolcsonzesReadDto> AssignPeldanyAsync(Guid rendelesId, KolcsonzesWriteDto kolcsonzesWriteDto);
 }

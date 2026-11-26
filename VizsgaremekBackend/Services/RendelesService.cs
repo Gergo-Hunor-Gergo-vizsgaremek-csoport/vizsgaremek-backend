@@ -54,36 +54,38 @@ public class RendelesService(VizsgaremekContext vizsgaremekContext, IMapper mapp
     }
 
     /// <inheritdoc />
-    public async Task<KolcsonzesReadDto[]> AssignPeldanysAsync(Guid rendelesId, KolcsonzesWriteDto[] kolcsonzesWriteDtos)
+    public async Task<KolcsonzesReadDto> AssignPeldanyAsync(Guid rendelesId, KolcsonzesWriteDto kolcsonzesWriteDto)
     {
-        ArgumentNullException.ThrowIfNull(kolcsonzesWriteDtos);
-        if (kolcsonzesWriteDtos.Length == 0)
-            throw new BadRequestException("At least one assignment is required.");
+        ArgumentNullException.ThrowIfNull(kolcsonzesWriteDto);
+        
+        Rendeles rendeles = await vizsgaremekContext.Rendeleses.SingleOrDefaultAsync(x => x.Id == rendelesId)
+                          ?? throw new NotFoundException(nameof(Rendeles), rendelesId);
 
         _ = await vizsgaremekContext.Rendeleses.SingleOrDefaultAsync(x => x.Id == rendelesId)
             ?? throw new NotFoundException(nameof(Rendeles), rendelesId);
 
-        var kolcsonzesReadDtos = new KolcsonzesReadDto[kolcsonzesWriteDtos.Length];
-        for (int i = 0; i < kolcsonzesWriteDtos.Length; i++)
+        Kolcsonzes kolcsonzes = mapper.Map<Kolcsonzes>(kolcsonzesWriteDto);
+
+        Peldany peldany = await vizsgaremekContext.Peldanys.SingleOrDefaultAsync(x => x.Id == kolcsonzes.PeldanyId)
+        ?? throw new NotFoundException(nameof(Peldany), kolcsonzes.PeldanyId);
+
+        if (peldany.ActiveKolcsonzesId != null) 
+            throw new ConflictException($"Peldany '{peldany.Id}' is already assigned to an active kolcsonzes.");
+
+        if (rendeles.CompletedQuantity >= rendeles.Quantity)
         {
-            var dto = kolcsonzesWriteDtos[i]
-                ?? throw new BadRequestException($"Assignment at index {i} must not be null.");
-
-            Kolcsonzes kolcsonzes = mapper.Map<Kolcsonzes>(dto);
-
-            Peldany peldany = await vizsgaremekContext.Peldanys.SingleOrDefaultAsync(x => x.Id == kolcsonzes.PeldanyId)
-                ?? throw new NotFoundException(nameof(Peldany), kolcsonzes.PeldanyId);
-
-            if (peldany.ActiveKolcsonzesId != null)
-                throw new ConflictException($"Peldany '{peldany.Id}' is already assigned to an active kolcsonzes.");
-
-            peldany.ActiveKolcsonzesId = kolcsonzes.Id;
-
-            await vizsgaremekContext.Kolcsonzess.AddAsync(kolcsonzes);
-            kolcsonzesReadDtos[i] = mapper.Map<KolcsonzesReadDto>(kolcsonzes);
+            throw new BadRequestException("Order already has enough items assigned to it");
         }
 
+
+        peldany.ActiveKolcsonzesId = kolcsonzes.Id;
+
+        await vizsgaremekContext.Kolcsonzess.AddAsync(kolcsonzes);
+        KolcsonzesReadDto kolcsonzesReadDto =  mapper.Map<KolcsonzesReadDto>(kolcsonzes);
+
+        rendeles.CompletedQuantity++;
+
         await vizsgaremekContext.SaveChangesAsync();
-        return kolcsonzesReadDtos;
+        return kolcsonzesReadDto;
     }
 }
