@@ -59,12 +59,13 @@ public class RendelesService(VizsgaremekContext vizsgaremekContext, IMapper mapp
         Rendeles rendeles = await vizsgaremekContext.Rendeleses.SingleOrDefaultAsync(x => x.Id == rendelesId)
                           ?? throw new NotFoundException(nameof(Rendeles), rendelesId);
 
+        ArgumentNullException.ThrowIfNull(kolcsonzesWriteDto);
+        
         if (rendeles.CompletedQuantity >= rendeles.Quantity)
         {
             throw new BadRequestException("Order already has enough items assigned to it");
         }
 
-        ArgumentNullException.ThrowIfNull(kolcsonzesWriteDto);
 
         _ = await vizsgaremekContext.Rendeleses.SingleOrDefaultAsync(x => x.Id == rendelesId)
             ?? throw new NotFoundException(nameof(Rendeles), rendelesId);
