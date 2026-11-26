@@ -56,16 +56,10 @@ public class RendelesService(VizsgaremekContext vizsgaremekContext, IMapper mapp
     /// <inheritdoc />
     public async Task<KolcsonzesReadDto> AssignPeldanyAsync(Guid rendelesId, KolcsonzesWriteDto kolcsonzesWriteDto)
     {
-        Rendeles rendeles = await vizsgaremekContext.Rendeleses.SingleOrDefaultAsync(x => x.Id == rendelesId)
-                          ?? throw new NotFoundException(nameof(Rendeles), rendelesId);
-
         ArgumentNullException.ThrowIfNull(kolcsonzesWriteDto);
         
-        if (rendeles.CompletedQuantity >= rendeles.Quantity)
-        {
-            throw new BadRequestException("Order already has enough items assigned to it");
-        }
-
+        Rendeles rendeles = await vizsgaremekContext.Rendeleses.SingleOrDefaultAsync(x => x.Id == rendelesId)
+                          ?? throw new NotFoundException(nameof(Rendeles), rendelesId);
 
         _ = await vizsgaremekContext.Rendeleses.SingleOrDefaultAsync(x => x.Id == rendelesId)
             ?? throw new NotFoundException(nameof(Rendeles), rendelesId);
@@ -77,6 +71,12 @@ public class RendelesService(VizsgaremekContext vizsgaremekContext, IMapper mapp
 
         if (peldany.ActiveKolcsonzesId != null) 
             throw new ConflictException($"Peldany '{peldany.Id}' is already assigned to an active kolcsonzes.");
+
+        if (rendeles.CompletedQuantity >= rendeles.Quantity)
+        {
+            throw new BadRequestException("Order already has enough items assigned to it");
+        }
+
 
         peldany.ActiveKolcsonzesId = kolcsonzes.Id;
 
