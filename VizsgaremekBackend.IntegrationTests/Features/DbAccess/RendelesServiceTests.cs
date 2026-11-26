@@ -156,7 +156,7 @@ public class RendelesServiceTests(DatabaseFixture fixture) : IClassFixture<Datab
     }
 
     [Fact]
-    public async Task AssignPeldanyAsync_WithNullArray_ShouldThrowArgumentNullException()
+    public async Task AssignPeldanyAsync_WithNullValue_ShouldThrowArgumentNullException()
     {
         using var scope = fixture.CreateScope();
         var service = GetService(scope);
